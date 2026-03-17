@@ -1,9 +1,19 @@
+from final_scorer import calculate_final_score
 from fastapi import FastAPI
 from pydantic import BaseModel
 from agents.competitor_agent import run_competitor_agent
 from agents.risk_agent import run_risk_agent
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="StartIQ - Member 2 Agents")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # For development only
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Request body ka structure
 class AgentRequest(BaseModel):
@@ -38,3 +48,8 @@ def risk_endpoint(request: AgentRequest):
         "competitor": competitor_data,
         "risk": risk_data
     }
+
+@app.post("/final-score")
+def final_score_endpoint(data: dict):
+    final_result = calculate_final_score(data)
+    return final_result
