@@ -5,3 +5,4 @@ langchain-groq
 pydantic
 python-dotenv
 tenacity
+python-multipart

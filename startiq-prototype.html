@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StartIQ — Supervisor Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0A0F;
+  --surface: #111118;
+  --card: #16161F;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.15);
+  --text: #F0F0F8;
+  --muted: #6B6B80;
+  --accent: #7C5CFC;
+  --accent2: #4FFFB0;
+  --accent3: #FF6B6B;
+  --accent-glow: rgba(124,92,252,0.15);
+  --green: #4FFFB0;
+  --green-dim: rgba(79,255,176,0.1);
+  --red: #FF6B6B;
+  --red-dim: rgba(255,107,107,0.1);
+  --amber: #FFB347;
+  --amber-dim: rgba(255,179,71,0.1);
+  --blue: #60A5FA;
+  --blue-dim: rgba(96,165,250,0.1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 32px;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.nav-links { display: flex; gap: 8px; }
+.nav-link {
+  font-size: 13px; color: var(--muted); padding: 6px 14px;
+  border-radius: 20px; cursor: pointer; transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--text); border-color: var(--border-hover);
+  background: rgba(255,255,255,0.04);
+}
+.nav-badge {
+  font-size: 11px; background: var(--accent); color: white;
+  padding: 2px 8px; border-radius: 20px; font-weight: 600;
+}
+
+/* ─── SECTIONS ─── */
+section { min-height: 100vh; padding: 120px 32px 80px; max-width: 1100px; margin: 0 auto; }
+
+/* ─── HERO ─── */
+.hero-section {
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: flex-start; position: relative;
+}
+.hero-glow {
+  position: absolute; top: 10%; left: -10%;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,0.08), transparent 70%);
+  pointer-events: none;
+}
+.hero-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 6px 16px; border-radius: 20px;
+  border: 1px solid rgba(124,92,252,0.4); color: var(--accent);
+  background: rgba(124,92,252,0.08); margin-bottom: 28px;
+}
+.dot-pulse {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--accent2);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
+
+h1 {
+  font-family: 'Syne', sans-serif; font-size: clamp(40px, 6vw, 72px);
+  font-weight: 800; line-height: 1.05; letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+h1 .accent { color: var(--accent); }
+h1 .green { color: var(--accent2); }
+
+.hero-sub {
+  font-size: 18px; color: var(--muted); max-width: 560px;
+  line-height: 1.7; margin-bottom: 40px;
+}
+
+.hero-stats { display: flex; gap: 40px; margin-bottom: 48px; }
+.stat-item { }
+.stat-num {
+  font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 700;
+  color: var(--text);
+}
+.stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  background: var(--accent); color: white; border: none; cursor: pointer;
+  transition: all 0.2s; font-family: 'Instrument Sans', sans-serif;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,92,252,0.4); }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 500;
+  background: transparent; color: var(--muted);
+  border: 1px solid var(--border-hover); cursor: pointer; transition: all 0.2s;
+  font-family: 'Instrument Sans', sans-serif;
+}
+.btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+
+/* ─── HOW IT WORKS ─── */
+.section-label {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 12px;
+}
+h2 {
+  font-family: 'Syne', sans-serif; font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px;
+}
+.section-sub { font-size: 16px; color: var(--muted); max-width: 520px; margin-bottom: 56px; }
+
+.flow-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; align-items: start; }
+.flow-node {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  position: relative;
+}
+.flow-node::after {
+  content: '→'; position: absolute; right: -14px; top: 20px;
+  color: var(--muted); font-size: 18px;
+}
+.flow-node:last-child::after { display: none; }
+.flow-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+.flow-step-num {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  color: var(--accent); text-transform: uppercase; margin-bottom: 4px;
+}
+.flow-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.flow-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+/* Agents Grid */
+.agents-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; }
+.agent-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px; transition: all 0.25s;
+  position: relative; overflow: hidden;
+}
+.agent-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.agent-card.purple::before { background: var(--accent); }
+.agent-card.green::before { background: var(--accent2); }
+.agent-card.red::before { background: var(--accent3); }
+.agent-card.blue::before { background: var(--blue); }
+.agent-card.amber::before { background: var(--amber); }
+.agent-card.teal::before { background: #00D4D4; }
+.agent-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.agent-icon { font-size: 24px; margin-bottom: 10px; }
+.agent-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.agent-role { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+.agent-out { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent2); background: rgba(79,255,176,0.06); border: 1px solid rgba(79,255,176,0.15); border-radius: 6px; padding: 6px 10px; line-height: 1.7; }
+
+/* ─── LIVE DEMO ─── */
+.demo-wrap { display: grid; grid-template-columns: 1fr 1.2fr; gap: 24px; align-items: start; }
+.demo-left { display: flex; flex-direction: column; gap: 16px; }
+
+.demo-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px;
+}
+.demo-card-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; }
+
+.field-group { display: flex; flex-direction: column; gap: 10px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 12px; color: var(--muted); }
+.field input {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 12px; font-size: 13px;
+  color: var(--text); font-family: 'Instrument Sans', sans-serif;
+  transition: border-color 0.2s; outline: none;
+}
+.field input:focus { border-color: var(--accent); }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.run-btn {
+  width: 100%; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  background: var(--accent); color: white; border: none; cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif; transition: all 0.2s; margin-top: 4px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.run-btn:hover:not(:disabled) { box-shadow: 0 6px 20px rgba(124,92,252,0.5); transform: translateY(-1px); }
+.run-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* Log terminal */
+.terminal {
+  background: #0D0D16; border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+}
+.terminal-bar {
+  background: #15151E; padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.term-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-body { padding: 14px 16px; font-family: 'DM Mono', monospace; font-size: 11.5px; line-height: 1.9; min-height: 150px; max-height: 200px; overflow-y: auto; }
+.tl { display: block; }
+.tl.dim { color: #3a3a55; }
+.tl.info { color: #60A5FA; }
+.tl.ok { color: var(--accent2); }
+.tl.warn { color: var(--amber); }
+.tl.err { color: var(--accent3); }
+.tl.acc { color: var(--accent); }
+
+/* Pipeline steps */
+.pipe-steps { display: flex; gap: 8px; flex-wrap: wrap; }
+.pipe-step {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; padding: 5px 12px; border-radius: 20px;
+  border: 1px solid var(--border); color: var(--muted);
+  transition: all 0.3s;
+}
+.pipe-step.active { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+.pipe-step.done { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.pipe-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* Results panel */
+.results-panel { opacity: 0; transform: translateY(12px); transition: all 0.5s; }
+.results-panel.show { opacity: 1; transform: translateY(0); }
+
+.metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+.metric-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.metric-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.metric-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; }
+.metric-value.green { color: var(--green); }
+.metric-value.red { color: var(--red); }
+.metric-value.amber { color: var(--amber); }
+.metric-value.blue { color: var(--blue); }
+
+.info-rows { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px 0; margin-bottom: 12px; }
+.info-row { display: flex; justify-content: space-between; padding: 9px 14px; font-size: 12.5px; border-bottom: 1px solid var(--border); }
+.info-row:last-child { border-bottom: none; }
+.info-key { color: var(--muted); }
+.info-val { font-weight: 500; color: var(--text); text-align: right; max-width: 60%; }
+
+.score-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.score-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.score-label { font-size: 12px; color: var(--muted); }
+.score-val { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: var(--accent2); }
+.score-track { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 1s cubic-bezier(.22,1,.36,1); width: 0%; }
+
+/* ─── EXPLANATION ─── */
+.explain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.explain-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px; transition: border-color 0.2s;
+}
+.explain-card:hover { border-color: var(--border-hover); }
+.explain-num {
+  font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800;
+  color: rgba(124,92,252,0.15); line-height: 1; margin-bottom: 12px;
+}
+.explain-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.explain-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
+.code-line { font-family: 'DM Mono', monospace; font-size: 11px; background: var(--surface); border-radius: 6px; padding: 8px 12px; margin-top: 12px; color: var(--accent2); border: 1px solid rgba(79,255,176,0.1); }
+
+/* ─── FOOTER ─── */
+footer {
+  text-align: center; padding: 48px 32px;
+  border-top: 1px solid var(--border);
+  color: var(--muted); font-size: 13px;
+}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .demo-wrap { grid-template-columns: 1fr; }
+  .agents-grid { grid-template-columns: 1fr 1fr; }
+  .flow-grid { grid-template-columns: 1fr; }
+  .flow-node::after { display: none; }
+  .metric-grid { grid-template-columns: 1fr 1fr; }
+  .explain-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">StartIQ</div>
+  <div class="nav-links">
+    <div class="nav-link active" onclick="scrollTo('hero')">Overview</div>
+    <div class="nav-link" onclick="scrollTo('how')">Architecture</div>
+    <div class="nav-link" onclick="scrollTo('demo')">Live Demo</div>
+    <div class="nav-link" onclick="scrollTo('explain')">Explanation</div>
+  </div>
+  <div class="nav-badge">Supervisor Demo v1</div>
+</nav>
+
+<!-- ─── SECTION 1: HERO ─── -->
+<section class="hero-section" id="hero">
+  <div class="hero-glow"></div>
+
+  <div class="hero-chip">
+    <div class="dot-pulse"></div>
+    AI-Powered Startup Analysis Platform
+  </div>
+
+  <h1>
+    Validate your startup<br>
+    idea with <span class="accent">AI agents</span><br>
+    in <span class="green">seconds</span>
+  </h1>
+
+  <p class="hero-sub">
+    StartIQ is a multi-agent system that analyzes startup ideas across 5 dimensions — 
+    market, competition, risk, feasibility, and financials — and returns structured intelligence.
+  </p>
+
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">5</div>
+      <div class="stat-label">Specialized AI Agents</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">7</div>
+      <div class="stat-label">Financial Metrics</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">&lt;10s</div>
+      <div class="stat-label">Full Analysis Time</div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-primary" onclick="scrollTo('demo')">▶ See Live Demo</button>
+    <button class="btn-ghost" onclick="scrollTo('how')">How it works →</button>
+  </div>
+</section>
+
+<!-- ─── SECTION 2: ARCHITECTURE ─── -->
+<section id="how" class="reveal">
+  <div class="section-label">System Architecture</div>
+  <h2>How the agent pipeline works</h2>
+  <p class="section-sub">Every idea flows through a structured multi-agent chain. Each agent is specialized, validated, and produces typed JSON output.</p>
+
+  <!-- Flow -->
+  <div class="flow-grid">
+    <div class="flow-node">
+      <div class="flow-icon" style="background:rgba(124,92,252,0.1); border-color:rgba(124,92,252,0.3);">📝</div>
+      <div class="flow-step-num">Step 01</div>
+      <div class="flow-title">User Input</div>
+      <div class="flow-desc">Startup idea sent via POST /analyze API</div>
+    </div>
+    <div class="flow-node">
+      <div class="flow-icon" style="background:rgba(96,165,250,0.1); border-color:rgba(96,165,250,0.3);">🧠</div>
+      <div class="flow-step-num">Step 02</div>
+      <div class="flow-title">Idea Agent</div>
+      <div class="flow-desc">Feasibility score, category, SWOT analysis</div>
+    </div>
+    <div class="flow-node">
+      <div class="flow-icon" style="background:rgba(79,255,176,0.1); border-color:rgba(79,255,176,0.3);">🌐</div>
+      <div class="flow-step-num">Step 03</div>
+      <div class="flow-step-num">Step 03</div>
+      <div class="flow-title">Market + Competitor</div>
+      <div class="flow-desc">TAM/SAM/SOM + competitor landscape</div>
+    </div>
+    <div class="flow-node">
+      <div class="flow-icon" style="background:rgba(255,107,107,0.1); border-color:rgba(255,107,107,0.3);">⚠️</div>
+      <div class="flow-step-num">Step 04</div>
+      <div class="flow-title">Risk Agent</div>
+      <div class="flow-desc">Risk scoring across 6 dimensions</div>
+    </div>
+    <div class="flow-node">
+      <div class="flow-icon" style="background:rgba(255,179,71,0.1); border-color:rgba(255,179,71,0.3);">💰</div>
+      <div class="flow-step-num">Step 05</div>
+      <div class="flow-title">Finance Agent</div>
+      <div class="flow-desc">Costs, revenue, burn rate, break-even</div>
+    </div>
+  </div>
+
+  <!-- Agents -->
+  <div class="agents-grid" style="margin-top: 48px;">
+    <div class="agent-card purple">
+      <div class="agent-icon">🧠</div>
+      <div class="agent-name">Idea Agent</div>
+      <div class="agent-role">Core feasibility analyzer</div>
+      <div class="agent-out">feasibility_score: 8.2<br>category: "EdTech"<br>strengths: [...]</div>
+    </div>
+    <div class="agent-card blue">
+      <div class="agent-icon">📊</div>
+      <div class="agent-name">Market Agent</div>
+      <div class="agent-role">Market sizing & opportunity</div>
+      <div class="agent-out">TAM: "$45B"<br>SAM: "$4.5B"<br>growth_rate: "18%"</div>
+    </div>
+    <div class="agent-card teal">
+      <div class="agent-icon">🔍</div>
+      <div class="agent-name">Competitor Agent</div>
+      <div class="agent-role">Competitive landscape mapping</div>
+      <div class="agent-out">direct: ["Byju's"]<br>indirect: ["YouTube"]<br>moat_score: 6.8</div>
+    </div>
+    <div class="agent-card red">
+      <div class="agent-icon">⚠️</div>
+      <div class="agent-name">Risk Agent</div>
+      <div class="agent-role">Multi-dimensional risk scoring</div>
+      <div class="agent-out">risk_score: 6.5<br>top_risk: "competition"<br>mitigation: [...]</div>
+    </div>
+    <div class="agent-card amber">
+      <div class="agent-icon">💰</div>
+      <div class="agent-name">Finance Agent</div>
+      <div class="agent-role">Full financial projection — <strong>LIVE BELOW</strong></div>
+      <div class="agent-out">burn_rate: "$8,500"<br>break_even: 14 months<br>funding: "$102,000"</div>
+    </div>
+    <div class="agent-card green">
+      <div class="agent-icon">✅</div>
+      <div class="agent-name">Pydantic Validator</div>
+      <div class="agent-role">Schema enforcement on all outputs</div>
+      <div class="agent-out">FinanceOutput(**data)<br>→ validated<br>→ model_dump()</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 3: LIVE DEMO ─── -->
+<section id="demo" class="reveal">
+  <div class="section-label">Finance Agent — Live</div>
+  <h2>Watch the agent run in real time</h2>
+  <p class="section-sub">This is the exact logic from your Python code, running live. Enter any startup idea and watch every step fire.</p>
+
+  <div class="demo-wrap">
+    <!-- LEFT: Input + terminal -->
+    <div class="demo-left">
+      <div class="demo-card">
+        <div class="demo-card-title">Agent Input</div>
+        <div class="field-group">
+          <div class="field">
+            <label>Startup Idea</label>
+            <input type="text" id="idea" value="AI tutor for class 10 students" />
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label>Market Size (TAM)</label>
+              <input type="text" id="tam" value="$45B" />
+            </div>
+            <div class="field">
+              <label>Main Competitor</label>
+              <input type="text" id="comp" value="Byju's" />
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="field">
+              <label>Feasibility (1–10)</label>
+              <input type="number" id="feas" value="8.2" min="1" max="10" step="0.1" />
+            </div>
+            <div class="field">
+              <label>Risk Score (1–10)</label>
+              <input type="number" id="risk" value="6.5" min="1" max="10" step="0.1" />
+            </div>
+          </div>
+        </div>
+        <button class="run-btn" id="runBtn" onclick="runAgent()">
+          <span id="btnTxt">▶ Run Finance Agent</span>
+        </button>
+      </div>
+
+      <!-- Pipeline steps -->
+      <div class="demo-card">
+        <div class="demo-card-title">Pipeline Steps</div>
+        <div class="pipe-steps">
+          <div class="pipe-step" id="p0"><div class="pipe-dot"></div>Input</div>
+          <div class="pipe-step" id="p1"><div class="pipe-dot"></div>LLM Call</div>
+          <div class="pipe-step" id="p2"><div class="pipe-dot"></div>JSON Parse</div>
+          <div class="pipe-step" id="p3"><div class="pipe-dot"></div>Validate</div>
+          <div class="pipe-step" id="p4"><div class="pipe-dot"></div>Output</div>
+        </div>
+      </div>
+
+      <!-- Terminal log -->
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="term-dot" style="background:#FF5F57;"></div>
+          <div class="term-dot" style="background:#FEBC2E;"></div>
+          <div class="term-dot" style="background:#28C840;"></div>
+          <span style="font-size:11px;color:var(--muted);margin-left:8px;font-family:'DM Mono',monospace;">finance_agent.py</span>
+        </div>
+        <div class="terminal-body" id="terminal">
+          <span class="tl dim">// Run the agent to see logs...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Results -->
+    <div>
+      <div class="results-panel" id="results">
+        <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:14px;">Financial Analysis Output</div>
+
+        <div class="metric-grid">
+          <div class="metric-box">
+            <div class="metric-label">Monthly Cost</div>
+            <div class="metric-value red" id="cost">—</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Monthly Revenue</div>
+            <div class="metric-value green" id="revenue">—</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Monthly Burn</div>
+            <div class="metric-value amber" id="burn">—</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Break Even</div>
+            <div class="metric-value blue" id="breakeven">—</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Funding Required</div>
+            <div class="metric-value" id="funding">—</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-label">Feasibility Score</div>
+            <div class="metric-value green" id="fscore">—</div>
+          </div>
+        </div>
+
+        <div class="info-rows">
+          <div class="info-row">
+            <span class="info-key">Revenue Model</span>
+            <span class="info-val" id="revmodel">—</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">Startup Category</span>
+            <span class="info-val" id="category">EdTech / B2C SaaS</span>
+          </div>
+          <div class="info-row">
+            <span class="info-key">Schema Validation</span>
+            <span class="info-val" id="validation" style="color:var(--green);">Waiting...</span>
+          </div>
+        </div>
+
+        <div class="score-section">
+          <div class="score-header">
+            <div class="score-label">Financial Feasibility Score</div>
+            <div class="score-val" id="scoreLabel">—</div>
+          </div>
+          <div class="score-track">
+            <div class="score-fill" id="scoreFill"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Placeholder when no result -->
+      <div id="placeholder" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:400px; color:var(--muted); text-align:center; gap:12px;">
+        <div style="font-size:48px; opacity:0.2;">💰</div>
+        <div style="font-size:14px;">Run the agent to see<br>financial analysis here</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SECTION 4: EXPLANATION ─── -->
+<section id="explain" class="reveal">
+  <div class="section-label">Code Explanation</div>
+  <h2>What each part of your code does</h2>
+  <p class="section-sub">A clean breakdown to explain to your supervisor — what problem each module solves and why.</p>
+
+  <div class="explain-grid">
+    <div class="explain-card">
+      <div class="explain-num">01</div>
+      <div class="explain-title">The LLM (ChatGroq)</div>
+      <div class="explain-body">
+        You're using <strong>Llama 3.3 70B</strong> via Groq — one of the fastest LLM APIs available. 
+        Temperature 0.2 keeps the output consistent and factual (lower = less random). 
+        This is the "brain" of your finance agent.
+      </div>
+      <div class="code-line">llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.2)</div>
+    </div>
+
+    <div class="explain-card">
+      <div class="explain-num">02</div>
+      <div class="explain-title">Prompt Engineering</div>
+      <div class="explain-body">
+        The system prompt <strong>constrains the LLM to output only JSON</strong> with exact keys. 
+        This is critical — without this, the model might return prose, markdown, or inconsistent formats. 
+        Your prompt is the "contract" between you and the AI.
+      </div>
+      <div class="code-line">"Respond ONLY with valid JSON. Use exact keys: ..."</div>
+    </div>
+
+    <div class="explain-card">
+      <div class="explain-num">03</div>
+      <div class="explain-title">Retry Logic (Tenacity)</div>
+      <div class="explain-body">
+        LLMs can occasionally fail or return malformed output. The <strong>@retry decorator</strong> automatically 
+        retries the LLM call up to 3 times with a 2-second wait. This makes your agent 
+        production-grade — it doesn't crash on the first hiccup.
+      </div>
+      <div class="code-line">@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))</div>
+    </div>
+
+    <div class="explain-card">
+      <div class="explain-num">04</div>
+      <div class="explain-title">JSON Parser</div>
+      <div class="explain-body">
+        Even with strict prompting, LLMs sometimes wrap output in markdown code fences (```json). 
+        Your <strong>_parse_json()</strong> function handles this gracefully — strips the fences 
+        and parses the clean JSON. Defensive coding for real-world AI behavior.
+      </div>
+      <div class="code-line">raw_text.split("```")[1] → json.loads(clean)</div>
+    </div>
+
+    <div class="explain-card">
+      <div class="explain-num">05</div>
+      <div class="explain-title">Pydantic Validation</div>
+      <div class="explain-body">
+        <strong>FinanceOutput</strong> is a Pydantic model that enforces types on every field. 
+        If the LLM returns a string where a float is expected, it raises a clear error 
+        instead of silently passing bad data downstream. This is your data quality gate.
+      </div>
+      <div class="code-line">validated = FinanceOutput(**result_dict) → .model_dump()</div>
+    </div>
+
+    <div class="explain-card">
+      <div class="explain-num">06</div>
+      <div class="explain-title">Agent Orchestration</div>
+      <div class="explain-body">
+        <strong>run_finance_agent()</strong> is the single public function that coordinates everything: 
+        call LLM → parse JSON → validate schema → return clean dict. 
+        Other agents pass their output into this as input, forming the full pipeline.
+      </div>
+      <div class="code-line">idea_data → market_data → risk_data → finance_agent()</div>
+    </div>
+  </div>
+</section>
+<!-- ─── SECTION 5: ROADMAP (MERGED FROM ALL MEMBERS) ─── -->
+<section id="roadmap" class="reveal">
+  <div class="section-label">Full Project Scope</div>
+  <h2>Complete System Roadmap (All Members)</h2>
+  <p class="section-sub">
+    This section combines contributions from all team members — showing how this prototype evolves into a full product.
+  </p>
+
+  <div class="agents-grid">
+
+    <!-- Feature 1 -->
+    <div class="agent-card red">
+      <div class="agent-icon">🌐</div>
+      <div class="agent-name">Real-Time Web Search</div>
+      <div class="agent-role">Live competitor intelligence</div>
+      <div class="agent-out">
+        DuckDuckGo + News API<br>
+        → Real competitors<br>
+        → Latest funding/news
+      </div>
+    </div>
+
+    <!-- Feature 2 -->
+    <div class="agent-card blue">
+      <div class="agent-icon">🗄️</div>
+      <div class="agent-name">Database Layer</div>
+      <div class="agent-role">Store all analysis</div>
+      <div class="agent-out">
+        Supabase / PostgreSQL<br>
+        → Save results<br>
+        → Avoid repeated API calls
+      </div>
+    </div>
+
+    <!-- Feature 3 -->
+    <div class="agent-card green">
+      <div class="agent-icon">⚡</div>
+      <div class="agent-name">Full Pipeline API</div>
+      <div class="agent-role">Single endpoint system</div>
+      <div class="agent-out">
+        POST /analyze<br>
+        → Runs all agents<br>
+        → Returns full report
+      </div>
+    </div>
+
+    <!-- Feature 4 -->
+    <div class="agent-card amber">
+      <div class="agent-icon">📊</div>
+      <div class="agent-name">Confidence Score</div>
+      <div class="agent-role">AI reliability indicator</div>
+      <div class="agent-out">
+        confidence: 87%<br>
+        → Trust level<br>
+        → Data strength indicator
+      </div>
+    </div>
+
+    <!-- Feature 5 -->
+    <div class="agent-card purple">
+      <div class="agent-icon">📄</div>
+      <div class="agent-name">PDF Report Generator</div>
+      <div class="agent-role">Investor-ready output</div>
+      <div class="agent-out">
+        → SWOT<br>
+        → Market analysis<br>
+        → Final decision report
+      </div>
+    </div>
+
+    <!-- Feature 6 -->
+    <div class="agent-card teal">
+      <div class="agent-icon">⚡</div>
+      <div class="agent-name">Smart Caching</div>
+      <div class="agent-role">Optimize performance</div>
+      <div class="agent-out">
+        Redis / DB cache<br>
+        → No repeated LLM calls<br>
+        → Faster response
+      </div>
+    </div>
+
+    <!-- Feature 7 -->
+    <div class="agent-card red">
+      <div class="agent-icon">🏷️</div>
+      <div class="agent-name">Industry Detection</div>
+      <div class="agent-role">Auto classify startup</div>
+      <div class="agent-out">
+        EdTech / FinTech / AI<br>
+        → Better analysis<br>
+        → Domain-specific insights
+      </div>
+    </div>
+
+    <!-- Feature 8 -->
+    <div class="agent-card blue">
+      <div class="agent-icon">⚔️</div>
+      <div class="agent-name">Startup Comparison</div>
+      <div class="agent-role">Compare 2 ideas</div>
+      <div class="agent-out">
+        Idea A vs Idea B<br>
+        → Scores<br>
+        → Best option suggestion
+      </div>
+    </div>
+
+    <!-- Feature 9 -->
+    <div class="agent-card green">
+      <div class="agent-icon">📈</div>
+      <div class="agent-name">Google Trends</div>
+      <div class="agent-role">Market validation</div>
+      <div class="agent-out">
+        Trend analysis<br>
+        → Growth signals<br>
+        → Demand insights
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="font-family:'Syne',sans-serif; font-size:20px; font-weight:800; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin-bottom:8px;">StartIQ</div>
+  <div>Multi-Agent Startup Analysis System · Finance Agent Prototype · Built with LangChain + Groq + FastAPI</div>
+</footer>
+
+<script>
+// Smooth scroll
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// Reveal on scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Terminal
+function tlog(msg, cls, delay) {
+  setTimeout(() => {
+    const t = document.getElementById('terminal');
+    if (t.querySelector('.dim')) t.innerHTML = '';
+    const span = document.createElement('span');
+    span.className = 'tl ' + (cls || '');
+    span.textContent = msg;
+    t.appendChild(span);
+    t.appendChild(document.createElement('br'));
+    t.scrollTop = t.scrollHeight;
+  }, delay || 0);
+}
+
+function setStep(idx, state) {
+  for (let i = 0; i <= 4; i++) {
+    const el = document.getElementById('p' + i);
+    el.classList.remove('active', 'done');
+    if (state === 'active' && i === idx) el.classList.add('active');
+    if (state === 'active' && i < idx) el.classList.add('done');
+    if (state === 'done') { if (i <= idx) el.classList.add('done'); }
+  }
+}
+
+function fmt(n) {
+  const num = Number(n);
+  if (num >= 100000) return '₹' + (num/100000).toFixed(1) + 'L';
+  return '$' + num.toLocaleString('en-US', { maximumFractionDigits: 0 });
+}
+
+async function runAgent() {
+  const btn = document.getElementById('runBtn');
+  const txt = document.getElementById('btnTxt');
+  btn.disabled = true;
+  txt.textContent = '⏳ Agent running...';
+  document.getElementById('terminal').innerHTML = '';
+  document.getElementById('placeholder').style.display = 'none';
+  document.getElementById('results').classList.remove('show');
+
+  const idea = document.getElementById('idea').value;
+  const tam = document.getElementById('tam').value;
+  const comp = document.getElementById('comp').value;
+  const feas = document.getElementById('feas').value;
+  const risk = document.getElementById('risk').value;
+
+  // Step 0
+  setStep(0, 'active');
+  tlog('> [finance_agent.py] run_finance_agent() called', 'info', 0);
+  tlog('> Input validated — idea: "' + idea + '"', 'ok', 300);
+  await sleep(700);
+
+  // Step 1
+  setStep(1, 'active');
+  tlog('> _call_llm() — invoking LangChain chain...', 'warn', 0);
+  tlog('> ChatGroq model: llama-3.3-70b-versatile', 'dim', 200);
+  tlog('> Attempt 1/3 (tenacity retry decorator active)', 'dim', 400);
+
+  const systemPrompt = `You are a startup financial analyst. 
+Respond ONLY with a valid JSON object. No explanation. No markdown. 
+Use these exact keys: estimated_monthly_cost, projected_monthly_revenue, monthly_burn, break_even_months, funding_required, revenue_model, financial_feasibility_score.
+All monetary values should be realistic USD amounts for an early-stage Indian startup.`;
+
+  const userMsg = `Startup Idea: ${idea}
+Market TAM: ${tam}
+Main Competitor: ${comp}
+Idea Feasibility Score: ${feas}/10
+Risk Score: ${risk}/10
+Return JSON only.`;
+
+  let result;
+  try {
+    const res = await fetch('http://localhost:8000/analyze', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    idea,
+    tam,
+    competitor: comp,
+    feasibility: parseFloat(feas),
+    risk: parseFloat(risk)
+  })
+});
+result = await res.json();  // result is already the clean dict — skip JSON parsing below
+
+tlog('> Response received from FastAPI ✓', 'ok', 0);
+await sleep(500);
+
+    // Step 2
+    // setStep(2, 'active');
+    // tlog('> _parse_json() — stripping markdown fences...', 'warn', 100);
+    // let clean = raw.trim();
+    // if (clean.includes('```')) {
+    //   clean = clean.split('```')[1];
+    //   if (clean.startsWith('json')) clean = clean.slice(4);
+    //   tlog('> Markdown fence detected and stripped ✓', 'ok', 300);
+    // }
+    // result = JSON.parse(clean.trim());
+    // tlog('> JSON.parse() succeeded ✓', 'ok', 500);
+    // await sleep(600);
+
+    // Step 3
+    setStep(3, 'active');
+    tlog('> FinanceOutput(**result_dict) — Pydantic validation...', 'warn', 100);
+    const required = ['estimated_monthly_cost','projected_monthly_revenue','monthly_burn','break_even_months','funding_required','revenue_model','financial_feasibility_score'];
+    let valid = true;
+    for (const k of required) {
+      if (!(k in result)) { tlog('> MISSING FIELD: ' + k, 'err', 200); valid = false; break; }
+    }
+    if (valid) {
+      tlog('> All 7 schema fields validated ✓', 'ok', 300);
+      tlog('> .model_dump() → clean Python dict', 'ok', 500);
+      document.getElementById('validation').textContent = 'FinanceOutput validated ✓';
+    }
+    await sleep(600);
+
+  } catch(e) {
+    tlog('> ERROR: ' + e.message, 'err', 0);
+    tlog('> Tenacity would retry (attempt 2/3)...', 'warn', 300);
+    btn.disabled = false; txt.textContent = '▶ Run Finance Agent';
+    setStep(0, '');
+    return;
+  }
+
+  // Step 4 — output
+  setStep(4, 'done');
+  tlog('> run_finance_agent() complete — returning result dict', 'acc', 100);
+  tlog('> ────────────────────────────────────', 'dim', 200);
+  tlog('> Ready to pass to FastAPI response ✓', 'ok', 300);
+
+  // Render results
+  await sleep(400);
+  document.getElementById('cost').textContent = fmt(result.estimated_monthly_cost);
+  document.getElementById('revenue').textContent = fmt(result.projected_monthly_revenue);
+  document.getElementById('burn').textContent = fmt(result.monthly_burn);
+  document.getElementById('breakeven').textContent = result.break_even_months + ' mo';
+  document.getElementById('funding').textContent = fmt(result.funding_required);
+  document.getElementById('fscore').textContent = Number(result.financial_feasibility_score).toFixed(1) + '/10';
+  document.getElementById('revmodel').textContent = result.revenue_model;
+
+  const pct = Math.round((result.financial_feasibility_score / 10) * 100);
+  document.getElementById('scoreLabel').textContent = pct + '%';
+  setTimeout(() => { document.getElementById('scoreFill').style.width = pct + '%'; }, 200);
+
+  document.getElementById('results').classList.add('show');
+  btn.disabled = false;
+  txt.textContent = '▶ Run Again';
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+</script>
+</body>
+</html>
