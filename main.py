@@ -21,20 +21,3 @@ def competitor_endpoint(request: AgentRequest):
         market_data=request.market_data
     )
     return result
-
-@app.post("/risk")
-def risk_endpoint(request: AgentRequest):
-    # Pehle competitor chalao
-    competitor_data = run_competitor_agent(
-        idea=request.idea,
-        market_data=request.market_data
-    )
-    # Phir risk me pass karo
-    risk_data = run_risk_agent(
-        idea=request.idea,
-        competitor_data=competitor_data
-    )
-    return {
-        "competitor": competitor_data,
-        "risk": risk_data
-    }
