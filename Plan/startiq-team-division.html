@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StartIQ – Team Work Division</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --bg: #f8f7f4;
+  --white: #ffffff;
+  --ink: #18151f;
+  --ink2: #3d3648;
+  --muted: #9b92a8;
+  --border: #e4dff0;
+
+  --m1: #5b4fcf;   --m1l: #ede9ff;  --m1b: rgba(91,79,207,0.15);
+  --m2: #0f9d78;   --m2l: #e3f9f3;  --m2b: rgba(15,157,120,0.15);
+  --m3: #d4500a;   --m3l: #fff0e6;  --m3b: rgba(212,80,10,0.15);
+  --m4: #b5195e;   --m4l: #ffeef5;  --m4b: rgba(181,25,94,0.15);
+
+  --week1: #f0edff;
+  --week2: #e3f9f3;
+  --week3: #fff4e3;
+  --week4: #fce8f3;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'Outfit', sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+}
+
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background:
+    radial-gradient(600px circle at 0% 0%, rgba(91,79,207,0.04), transparent),
+    radial-gradient(600px circle at 100% 100%, rgba(181,25,94,0.04), transparent);
+  pointer-events:none; z-index:0;
+}
+
+.page { position:relative; z-index:1; max-width:1100px; margin:0 auto; padding:48px 24px 100px; }
+
+/* ── HEADER ── */
+.header { text-align:center; margin-bottom:56px; animation: up 0.6s ease both; }
+.eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:100px; padding:7px 20px; margin-bottom:18px;
+  font-family:'JetBrains Mono',monospace; font-size:11px;
+  color:var(--muted); letter-spacing:2px;
+}
+.eyebrow-dot { width:7px; height:7px; border-radius:50%; background:var(--m1); animation:pulse 2s infinite; }
+h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(48px,8vw,88px); letter-spacing:2px; line-height:0.9; color:var(--ink); margin-bottom:14px; }
+h1 span { color:var(--m1); }
+.header-sub { font-size:15px; color:var(--muted); max-width:520px; margin:0 auto; line-height:1.6; }
+
+/* ── MEMBER CARDS ROW ── */
+.members-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+  margin-bottom:40px; animation: up 0.6s ease 0.1s both;
+}
+@media(max-width:700px){ .members-row { grid-template-columns:1fr 1fr; } }
+
+.member-card {
+  border-radius:20px; padding:22px 18px;
+  border:2px solid; position:relative; overflow:hidden;
+  transition:transform 0.25s, box-shadow 0.25s;
+}
+.member-card:hover { transform:translateY(-4px); box-shadow:0 16px 40px -12px rgba(0,0,0,0.12); }
+.member-card::before {
+  content:''; position:absolute;
+  top:-30px; right:-30px;
+  width:80px; height:80px; border-radius:50%;
+  opacity:0.12;
+}
+
+.m1-card { background:var(--m1l); border-color:var(--m1); }
+.m1-card::before { background:var(--m1); }
+.m2-card { background:var(--m2l); border-color:var(--m2); }
+.m2-card::before { background:var(--m2); }
+.m3-card { background:var(--m3l); border-color:var(--m3); }
+.m3-card::before { background:var(--m3); }
+.m4-card { background:var(--m4l); border-color:var(--m4); }
+.m4-card::before { background:var(--m4); }
+
+.member-num {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  letter-spacing:2px; margin-bottom:10px; font-weight:700;
+}
+.m1-card .member-num { color:var(--m1); }
+.m2-card .member-num { color:var(--m2); }
+.m3-card .member-num { color:var(--m3); }
+.m4-card .member-num { color:var(--m4); }
+
+.member-avatar { font-size:32px; margin-bottom:10px; }
+.member-role { font-size:15px; font-weight:800; color:var(--ink); margin-bottom:4px; line-height:1.2; }
+.member-domain { font-size:11px; font-family:'JetBrains Mono',monospace; color:var(--muted); margin-bottom:12px; }
+.member-tech { display:flex; flex-wrap:wrap; gap:4px; }
+.tech-pill {
+  font-size:10px; padding:3px 8px; border-radius:100px;
+  font-family:'JetBrains Mono',monospace; font-weight:500;
+  border:1px solid;
+}
+.m1-card .tech-pill { background:rgba(91,79,207,0.1); border-color:rgba(91,79,207,0.3); color:var(--m1); }
+.m2-card .tech-pill { background:rgba(15,157,120,0.1); border-color:rgba(15,157,120,0.3); color:var(--m2); }
+.m3-card .tech-pill { background:rgba(212,80,10,0.1); border-color:rgba(212,80,10,0.3); color:var(--m3); }
+.m4-card .tech-pill { background:rgba(181,25,94,0.1); border-color:rgba(181,25,94,0.3); color:var(--m4); }
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  letter-spacing:3px; color:var(--muted); margin-bottom:14px;
+  display:flex; align-items:center; gap:12px;
+}
+.sec-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── WORK DIVISION GRID ── */
+.division-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  margin-bottom:40px;
+}
+@media(max-width:650px){ .division-grid { grid-template-columns:1fr; } }
+
+.division-card {
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:20px; overflow:hidden;
+  animation: up 0.5s ease both;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.division-card:nth-child(1){ animation-delay:0.15s; }
+.division-card:nth-child(2){ animation-delay:0.2s; }
+.division-card:nth-child(3){ animation-delay:0.25s; }
+.division-card:nth-child(4){ animation-delay:0.3s; }
+
+.div-header {
+  padding:18px 22px; display:flex; align-items:center; gap:14px;
+  border-bottom:1.5px solid var(--border);
+}
+.div-avatar { font-size:24px; }
+.div-name { font-size:17px; font-weight:800; }
+.div-sub { font-size:11px; font-family:'JetBrains Mono',monospace; margin-top:2px; }
+.div-badge {
+  margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:10px;
+  padding:5px 12px; border-radius:100px; border:1.5px solid; font-weight:700;
+  white-space:nowrap;
+}
+
+.m1-div .div-header { background:var(--m1l); }
+.m1-div .div-name   { color:var(--m1); }
+.m1-div .div-sub    { color:rgba(91,79,207,0.6); }
+.m1-div .div-badge  { background:rgba(91,79,207,0.1); border-color:var(--m1); color:var(--m1); }
+
+.m2-div .div-header { background:var(--m2l); }
+.m2-div .div-name   { color:var(--m2); }
+.m2-div .div-sub    { color:rgba(15,157,120,0.6); }
+.m2-div .div-badge  { background:rgba(15,157,120,0.1); border-color:var(--m2); color:var(--m2); }
+
+.m3-div .div-header { background:var(--m3l); }
+.m3-div .div-name   { color:var(--m3); }
+.m3-div .div-sub    { color:rgba(212,80,10,0.6); }
+.m3-div .div-badge  { background:rgba(212,80,10,0.1); border-color:var(--m3); color:var(--m3); }
+
+.m4-div .div-header { background:var(--m4l); }
+.m4-div .div-name   { color:var(--m4); }
+.m4-div .div-sub    { color:rgba(181,25,94,0.6); }
+.m4-div .div-badge  { background:rgba(181,25,94,0.1); border-color:var(--m4); color:var(--m4); }
+
+.div-body { padding:18px 22px; }
+
+.task-item {
+  display:flex; align-items:flex-start; gap:12px;
+  padding:10px 0; border-bottom:1px solid var(--border);
+}
+.task-item:last-child { border-bottom:none; }
+.task-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+.task-title { font-size:13px; font-weight:700; color:var(--ink); margin-bottom:2px; }
+.task-desc { font-size:11px; color:var(--muted); line-height:1.5; }
+.task-tag {
+  display:inline-block; margin-top:4px;
+  font-family:'JetBrains Mono',monospace; font-size:9px;
+  padding:2px 7px; border-radius:100px; border:1px solid;
+}
+.m1-div .task-tag { background:rgba(91,79,207,0.07); border-color:rgba(91,79,207,0.25); color:var(--m1); }
+.m2-div .task-tag { background:rgba(15,157,120,0.07); border-color:rgba(15,157,120,0.25); color:var(--m2); }
+.m3-div .task-tag { background:rgba(212,80,10,0.07);  border-color:rgba(212,80,10,0.25);  color:var(--m3); }
+.m4-div .task-tag { background:rgba(181,25,94,0.07);  border-color:rgba(181,25,94,0.25);  color:var(--m4); }
+
+/* ── TIMELINE ── */
+.timeline-section { margin-bottom:40px; animation: up 0.5s ease 0.35s both; }
+
+.timeline {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:20px; overflow:hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+@media(max-width:650px){ .timeline { grid-template-columns:1fr 1fr; } }
+
+.tl-col { padding:22px 18px; border-right:1.5px solid var(--border); }
+.tl-col:last-child { border-right:none; }
+.tl-week {
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  letter-spacing:2px; margin-bottom:12px; font-weight:700;
+  padding:5px 10px; border-radius:100px; display:inline-block;
+}
+.w1 .tl-week { background:var(--week1); color:var(--m1); }
+.w2 .tl-week { background:var(--week2); color:var(--m2); }
+.w3 .tl-week { background:var(--week3); color:var(--m3); }
+.w4 .tl-week { background:var(--week4); color:var(--m4); }
+
+.tl-title { font-size:14px; font-weight:800; margin-bottom:10px; color:var(--ink); }
+.tl-item {
+  display:flex; align-items:flex-start; gap:7px;
+  font-size:11px; color:var(--ink2); margin-bottom:6px; line-height:1.4;
+}
+.tl-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.w1 .tl-dot { background:var(--m1); }
+.w2 .tl-dot { background:var(--m2); }
+.w3 .tl-dot { background:var(--m3); }
+.w4 .tl-dot { background:var(--m4); }
+
+/* ── INTEGRATION FLOW ── */
+.integration-section { margin-bottom:40px; animation: up 0.5s ease 0.4s both; }
+
+.integration-box {
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:20px; padding:28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.int-flow {
+  display:flex; align-items:center; gap:0;
+  overflow-x:auto; scrollbar-width:none; padding:8px 0;
+}
+.int-node {
+  flex-shrink:0; border-radius:14px; padding:14px 16px; text-align:center;
+  border:1.5px solid; min-width:130px;
+}
+.int-node.n1 { background:var(--m1l); border-color:var(--m1); }
+.int-node.n2 { background:var(--m2l); border-color:var(--m2); }
+.int-node.n3 { background:var(--m3l); border-color:var(--m3); }
+.int-node.n4 { background:var(--m4l); border-color:var(--m4); }
+.int-node.shared { background:#f5f5f5; border-color:var(--border); border-style:dashed; }
+
+.int-owner { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:1px; margin-bottom:5px; }
+.n1 .int-owner { color:var(--m1); }
+.n2 .int-owner { color:var(--m2); }
+.n3 .int-owner { color:var(--m3); }
+.n4 .int-owner { color:var(--m4); }
+.shared .int-owner { color:var(--muted); }
+
+.int-title { font-size:12px; font-weight:700; color:var(--ink); margin-bottom:3px; }
+.int-sub { font-size:10px; color:var(--muted); }
+
+.int-arrow {
+  font-size:18px; color:var(--border); flex-shrink:0;
+  padding:0 10px; display:flex; flex-direction:column;
+  align-items:center; gap:2px;
+}
+.int-arrow-label { font-size:9px; font-family:'JetBrains Mono',monospace; color:var(--muted); white-space:nowrap; }
+
+/* ── RESPONSIBILITY TABLE ── */
+.resp-section { margin-bottom:40px; animation: up 0.5s ease 0.45s both; }
+
+.resp-table {
+  width:100%; border-collapse:collapse;
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:20px; overflow:hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+
+.resp-table th {
+  padding:14px 18px; text-align:left;
+  font-family:'JetBrains Mono',monospace; font-size:10px;
+  letter-spacing:2px; color:var(--muted);
+  background:#faf9f7; border-bottom:1.5px solid var(--border);
+}
+
+.resp-table td { padding:14px 18px; font-size:12px; border-bottom:1px solid var(--border); vertical-align:top; }
+.resp-table tr:last-child td { border-bottom:none; }
+.resp-table tr:hover td { background:#fdfcfb; }
+
+.owner-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  border-radius:100px; padding:4px 10px;
+  font-size:11px; font-weight:700; border:1.5px solid;
+  white-space:nowrap;
+}
+.ob1 { background:var(--m1l); border-color:var(--m1); color:var(--m1); }
+.ob2 { background:var(--m2l); border-color:var(--m2); color:var(--m2); }
+.ob3 { background:var(--m3l); border-color:var(--m3); color:var(--m3); }
+.ob4 { background:var(--m4l); border-color:var(--m4); color:var(--m4); }
+
+.pri-badge {
+  font-family:'JetBrains Mono',monospace; font-size:9px;
+  padding:3px 8px; border-radius:100px; display:inline-block;
+}
+.pri-high   { background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; }
+.pri-med    { background:#fef9c3; color:#ca8a04; border:1px solid #fde047; }
+.pri-low    { background:#dcfce7; color:#16a34a; border:1px solid #86efac; }
+
+/* ── TIPS BOX ── */
+.tips-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; animation: up 0.5s ease 0.5s both; }
+@media(max-width:600px){ .tips-grid { grid-template-columns:1fr; } }
+
+.tip-card {
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:16px; padding:18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.tip-icon { font-size:22px; margin-bottom:8px; }
+.tip-title { font-size:13px; font-weight:800; margin-bottom:5px; }
+.tip-text { font-size:12px; color:var(--ink2); line-height:1.6; }
+
+/* ── ANIMATIONS ── */
+@keyframes up { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.mb32 { margin-bottom:32px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="eyebrow"><div class="eyebrow-dot"></div>GROUP PROJECT · 4 MEMBERS · MAJOR PROJECT</div>
+    <h1>START<span>IQ</span><br>TEAM PLAN</h1>
+    <p class="header-sub">Complete work division for 4 members — each person owns one full layer of the system so work can happen in parallel</p>
+  </div>
+
+  <!-- MEMBER CARDS -->
+  <div class="sec-label">TEAM OVERVIEW</div>
+  <div class="members-row mb32">
+
+    <div class="member-card m1-card">
+      <div class="member-num">MEMBER 01</div>
+      <div class="member-avatar">👨‍💻</div>
+      <div class="member-role">AI Engineer</div>
+      <div class="member-domain">Python · LangChain · Groq</div>
+      <div class="member-tech">
+        <span class="tech-pill">Python</span>
+        <span class="tech-pill">LangChain</span>
+        <span class="tech-pill">FastAPI</span>
+        <span class="tech-pill">Groq API</span>
+      </div>
+    </div>
+
+    <div class="member-card m2-card">
+      <div class="member-num">MEMBER 02</div>
+      <div class="member-avatar">⚙️</div>
+      <div class="member-role">Backend Engineer</div>
+      <div class="member-domain">Node.js · Express · PostgreSQL</div>
+      <div class="member-tech">
+        <span class="tech-pill">Node.js</span>
+        <span class="tech-pill">Express</span>
+        <span class="tech-pill">PostgreSQL</span>
+        <span class="tech-pill">Railway</span>
+      </div>
+    </div>
+
+    <div class="member-card m3-card">
+      <div class="member-num">MEMBER 03</div>
+      <div class="member-avatar">🎨</div>
+      <div class="member-role">Frontend Engineer</div>
+      <div class="member-domain">Next.js · React · Tailwind</div>
+      <div class="member-tech">
+        <span class="tech-pill">Next.js</span>
+        <span class="tech-pill">React</span>
+        <span class="tech-pill">Tailwind</span>
+        <span class="tech-pill">Vercel</span>
+      </div>
+    </div>
+
+    <div class="member-card m4-card">
+      <div class="member-num">MEMBER 04</div>
+      <div class="member-avatar">🔗</div>
+      <div class="member-role">Integration & Data</div>
+      <div class="member-domain">APIs · DB Design · DevOps</div>
+      <div class="member-tech">
+        <span class="tech-pill">SerpAPI</span>
+        <span class="tech-pill">Trends API</span>
+        <span class="tech-pill">Neon.tech</span>
+        <span class="tech-pill">GitHub CI</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DETAILED WORK DIVISION -->
+  <div class="sec-label">DETAILED WORK BREAKDOWN</div>
+  <div class="division-grid mb32">
+
+    <!-- MEMBER 1 -->
+    <div class="division-card m1-div">
+      <div class="div-header">
+        <div class="div-avatar">👨‍💻</div>
+        <div>
+          <div class="div-name">Member 01 — AI Engineer</div>
+          <div class="div-sub">Owns the entire AI Agent Layer</div>
+        </div>
+        <div class="div-badge">FastAPI · Python</div>
+      </div>
+      <div class="div-body">
+
+        <div class="task-item">
+          <div class="task-icon">🤖</div>
+          <div>
+            <div class="task-title">Build Agent 1 — Idea Agent</div>
+            <div class="task-desc">System prompt, Pydantic schema, LangChain chain, retry logic. First agent to build — serves as the template for others.</div>
+            <span class="task-tag">WEEK 1</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">📊</div>
+          <div>
+            <div class="task-title">Build Agent 4 — Finance Agent</div>
+            <div class="task-desc">Startup cost estimation, revenue model, break-even analysis, profit projection using LLM reasoning.</div>
+            <span class="task-tag">WEEK 2</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">⚠️</div>
+          <div>
+            <div class="task-title">Build Agent 5 — Risk Agent</div>
+            <div class="task-desc">Risk scoring, execution challenges, innovation uniqueness rating, mitigation tips.</div>
+            <span class="task-tag">WEEK 2</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🏆</div>
+          <div>
+            <div class="task-title">Build Agent 6 — Final Scoring Agent</div>
+            <div class="task-desc">Aggregates all 5 agents' outputs into one master JSON with investment readiness rating and verdict.</div>
+            <span class="task-tag">WEEK 3</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🧪</div>
+          <div>
+            <div class="task-title">Test All Agents in Google Colab</div>
+            <div class="task-desc">Test each agent individually with 5+ different startup ideas. Tune prompts until JSON output is consistent and accurate.</div>
+            <span class="task-tag">ONGOING</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🚀</div>
+          <div>
+            <div class="task-title">Deploy FastAPI to Render.com</div>
+            <div class="task-desc">Package all agents into one FastAPI app, set environment variables, deploy. Give Member 2 the live URL.</div>
+            <span class="task-tag">WEEK 4</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MEMBER 2 -->
+    <div class="division-card m2-div">
+      <div class="div-header">
+        <div class="div-avatar">⚙️</div>
+        <div>
+          <div class="div-name">Member 02 — Backend Engineer</div>
+          <div class="div-sub">Owns the Orchestrator + Database Layer</div>
+        </div>
+        <div class="div-badge">Node.js · Express</div>
+      </div>
+      <div class="div-body">
+
+        <div class="task-item">
+          <div class="task-icon">🗂️</div>
+          <div>
+            <div class="task-title">Design PostgreSQL Schema</div>
+            <div class="task-desc">Create tables: evaluations, agent_outputs, final_scores. Design run_id linking system. Work with Member 4 on Neon.tech setup.</div>
+            <span class="task-tag">WEEK 1</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">⚙️</div>
+          <div>
+            <div class="task-title">Build the Orchestrator Pipeline</div>
+            <div class="task-desc">Core logic — call Agent 1 → save output → pass context → call Agent 2 → repeat. Sequential pipeline with error handling.</div>
+            <span class="task-tag">WEEK 2</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🔄</div>
+          <div>
+            <div class="task-title">Build REST API for Frontend</div>
+            <div class="task-desc">POST /evaluate → starts pipeline. GET /result/:run_id → returns final report. GET /history → past evaluations list.</div>
+            <span class="task-tag">WEEK 2</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🛡️</div>
+          <div>
+            <div class="task-title">Error Handling + Retry Logic</div>
+            <div class="task-desc">If an agent fails, retry 3 times. If all fail, mark that agent as "unavailable" and continue pipeline — never crash.</div>
+            <span class="task-tag">WEEK 3</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🔐</div>
+          <div>
+            <div class="task-title">Environment & Security Setup</div>
+            <div class="task-desc">Manage all API keys via .env files. CORS setup so frontend can call backend. Rate limiting to prevent API abuse.</div>
+            <span class="task-tag">WEEK 3</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🚀</div>
+          <div>
+            <div class="task-title">Deploy Backend to Railway.app</div>
+            <div class="task-desc">Push to GitHub → connect Railway → set env vars → deploy. Give Member 3 the backend API base URL.</div>
+            <span class="task-tag">WEEK 4</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MEMBER 3 -->
+    <div class="division-card m3-div">
+      <div class="div-header">
+        <div class="div-avatar">🎨</div>
+        <div>
+          <div class="div-name">Member 03 — Frontend Engineer</div>
+          <div class="div-sub">Owns the Entire User Interface</div>
+        </div>
+        <div class="div-badge">Next.js · Tailwind</div>
+      </div>
+      <div class="div-body">
+
+        <div class="task-item">
+          <div class="task-icon">📝</div>
+          <div>
+            <div class="task-title">Build Idea Submission Page</div>
+            <div class="task-desc">Landing page with a textarea for startup idea input, submit button, loading animation while agents process.</div>
+            <span class="task-tag">WEEK 1</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">📊</div>
+          <div>
+            <div class="task-title">Build Score Dashboard UI</div>
+            <div class="task-desc">5 circular score rings (Idea, Market, Competitor, Finance, Risk) + one big Final Score. Animated on load.</div>
+            <span class="task-tag">WEEK 2</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">📋</div>
+          <div>
+            <div class="task-title">Build Full Report UI</div>
+            <div class="task-desc">Market TAM/SAM/SOM bars, Competitor table, SWOT grid, Finance breakdown, Risk panel, Next Steps list. All from JSON data.</div>
+            <span class="task-tag">WEEK 2-3</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">📱</div>
+          <div>
+            <div class="task-title">Make It Fully Responsive</div>
+            <div class="task-desc">Works perfectly on mobile, tablet, and desktop. This matters for demo day — professors may view on phone.</div>
+            <span class="task-tag">WEEK 3</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">📜</div>
+          <div>
+            <div class="task-title">History Page</div>
+            <div class="task-desc">List of past evaluations from DB. User can click any past idea to see its full report again.</div>
+            <span class="task-tag">WEEK 3</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🚀</div>
+          <div>
+            <div class="task-title">Deploy Frontend to Vercel</div>
+            <div class="task-desc">Connect GitHub repo to Vercel. Set backend API URL as environment variable. One-click deploy.</div>
+            <span class="task-tag">WEEK 4</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MEMBER 4 -->
+    <div class="division-card m4-div">
+      <div class="div-header">
+        <div class="div-avatar">🔗</div>
+        <div>
+          <div class="div-name">Member 04 — Integration & Data</div>
+          <div class="div-sub">Owns Real Data APIs + DevOps + Testing</div>
+        </div>
+        <div class="div-badge">APIs · CI/CD · QA</div>
+      </div>
+      <div class="div-body">
+
+        <div class="task-item">
+          <div class="task-icon">🌐</div>
+          <div>
+            <div class="task-title">Build Agent 2 — Market Agent</div>
+            <div class="task-desc">Integrate Google Trends API (pytrends) to fetch REAL search data. Inject into LLM prompt for accurate TAM/SAM/SOM.</div>
+            <span class="task-tag">WEEK 1-2</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🔍</div>
+          <div>
+            <div class="task-title">Build Agent 3 — Competitor Agent</div>
+            <div class="task-desc">Integrate SerpAPI to fetch REAL Google search results for competitors. LLM then analyzes actual companies, not guesses.</div>
+            <span class="task-tag">WEEK 2</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🗄️</div>
+          <div>
+            <div class="task-title">Setup Neon.tech PostgreSQL</div>
+            <div class="task-desc">Create DB on Neon.tech, run migrations, create all tables, give connection string to Member 2.</div>
+            <span class="task-tag">WEEK 1</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🔧</div>
+          <div>
+            <div class="task-title">Setup GitHub + CI/CD Pipeline</div>
+            <div class="task-desc">Create organization repo, set branch rules, connect Railway + Render + Vercel to auto-deploy on push to main.</div>
+            <span class="task-tag">WEEK 1</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">🧪</div>
+          <div>
+            <div class="task-title">End-to-End Integration Testing</div>
+            <div class="task-desc">Test full pipeline — from idea submission to final report. Find bugs at integration points. Use Postman for API tests.</div>
+            <span class="task-tag">WEEK 3-4</span>
+          </div>
+        </div>
+
+        <div class="task-item">
+          <div class="task-icon">📄</div>
+          <div>
+            <div class="task-title">Write Project Documentation</div>
+            <div class="task-desc">README, API docs, architecture diagram, setup guide. This is needed for major project submission report.</div>
+            <span class="task-tag">WEEK 4</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="sec-label">4-WEEK SPRINT TIMELINE</div>
+  <div class="timeline-section mb32">
+    <div class="timeline">
+
+      <div class="tl-col w1">
+        <div class="tl-week">WEEK 1 — FOUNDATION</div>
+        <div class="tl-title">Everyone sets up</div>
+        <div class="tl-item"><div class="tl-dot"></div>M1: Agent 1 in Colab</div>
+        <div class="tl-item"><div class="tl-dot"></div>M2: DB schema + Express boilerplate</div>
+        <div class="tl-item"><div class="tl-dot"></div>M3: Next.js setup + submission page</div>
+        <div class="tl-item"><div class="tl-dot"></div>M4: Neon DB + GitHub + SerpAPI test</div>
+        <div class="tl-item"><div class="tl-dot"></div>All: Groq API keys setup</div>
+      </div>
+
+      <div class="tl-col w2">
+        <div class="tl-week">WEEK 2 — BUILD</div>
+        <div class="tl-title">Core features built</div>
+        <div class="tl-item"><div class="tl-dot"></div>M1: Agents 4 + 5 complete</div>
+        <div class="tl-item"><div class="tl-dot"></div>M2: Orchestrator pipeline working</div>
+        <div class="tl-item"><div class="tl-dot"></div>M3: Score dashboard + report UI</div>
+        <div class="tl-item"><div class="tl-dot"></div>M4: Agents 2 + 3 with real APIs</div>
+        <div class="tl-item"><div class="tl-dot"></div>All: Daily sync on Discord/WhatsApp</div>
+      </div>
+
+      <div class="tl-col w3">
+        <div class="tl-week">WEEK 3 — CONNECT</div>
+        <div class="tl-title">All parts integrated</div>
+        <div class="tl-item"><div class="tl-dot"></div>M1: Agent 6 + Colab testing done</div>
+        <div class="tl-item"><div class="tl-dot"></div>M2: Backend fully connected to AI layer</div>
+        <div class="tl-item"><div class="tl-dot"></div>M3: Frontend connected to backend API</div>
+        <div class="tl-item"><div class="tl-dot"></div>M4: Full E2E test + bug fixes</div>
+        <div class="tl-item"><div class="tl-dot"></div>All: First full demo internally</div>
+      </div>
+
+      <div class="tl-col w4">
+        <div class="tl-week">WEEK 4 — DEPLOY</div>
+        <div class="tl-title">Live & submission ready</div>
+        <div class="tl-item"><div class="tl-dot"></div>M1: FastAPI live on Render.com</div>
+        <div class="tl-item"><div class="tl-dot"></div>M2: Backend live on Railway.app</div>
+        <div class="tl-item"><div class="tl-dot"></div>M3: Frontend live on Vercel</div>
+        <div class="tl-item"><div class="tl-dot"></div>M4: Docs + final testing done</div>
+        <div class="tl-item"><div class="tl-dot"></div>All: Demo rehearsal + submission</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INTEGRATION FLOW -->
+  <div class="sec-label">HOW ALL 4 MEMBERS' WORK CONNECTS</div>
+  <div class="integration-section mb32">
+    <div class="integration-box">
+      <div style="font-size:13px; color:var(--muted); margin-bottom:20px; font-family:'JetBrains Mono',monospace; letter-spacing:1px;">DATA FLOW ACROSS ALL 4 MEMBERS' WORK →</div>
+      <div class="int-flow">
+
+        <div class="int-node n3">
+          <div class="int-owner">MEMBER 03</div>
+          <div class="int-title">Next.js UI</div>
+          <div class="int-sub">User submits idea</div>
+        </div>
+
+        <div class="int-arrow">
+          <div>→</div>
+          <div class="int-arrow-label">HTTP POST</div>
+        </div>
+
+        <div class="int-node n2">
+          <div class="int-owner">MEMBER 02</div>
+          <div class="int-title">Node.js Orchestrator</div>
+          <div class="int-sub">Controls pipeline</div>
+        </div>
+
+        <div class="int-arrow">
+          <div>→</div>
+          <div class="int-arrow-label">Calls agents</div>
+        </div>
+
+        <div class="int-node n4">
+          <div class="int-owner">MEMBER 04</div>
+          <div class="int-title">Agent 2 + 3</div>
+          <div class="int-sub">Real data fetch</div>
+        </div>
+
+        <div class="int-arrow">
+          <div>→</div>
+          <div class="int-arrow-label">JSON results</div>
+        </div>
+
+        <div class="int-node n1">
+          <div class="int-owner">MEMBER 01</div>
+          <div class="int-title">Agents 1,4,5,6</div>
+          <div class="int-sub">LLM reasoning</div>
+        </div>
+
+        <div class="int-arrow">
+          <div>→</div>
+          <div class="int-arrow-label">Saves to DB</div>
+        </div>
+
+        <div class="int-node n4">
+          <div class="int-owner">MEMBER 04</div>
+          <div class="int-title">PostgreSQL</div>
+          <div class="int-sub">Neon.tech cloud</div>
+        </div>
+
+        <div class="int-arrow">
+          <div>→</div>
+          <div class="int-arrow-label">Final JSON</div>
+        </div>
+
+        <div class="int-node n3">
+          <div class="int-owner">MEMBER 03</div>
+          <div class="int-title">Report Page</div>
+          <div class="int-sub">User sees report</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- RESPONSIBILITY TABLE -->
+  <div class="sec-label">QUICK RESPONSIBILITY REFERENCE</div>
+  <div class="resp-section mb32">
+    <table class="resp-table">
+      <thead>
+        <tr>
+          <th>TASK</th>
+          <th>OWNER</th>
+          <th>DEPENDS ON</th>
+          <th>PRIORITY</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Groq API + LangChain setup</strong></td>
+          <td><span class="owner-badge ob1">👨‍💻 Member 01</span></td>
+          <td style="color:var(--muted);font-size:11px">Nothing — start immediately</td>
+          <td><span class="pri-badge pri-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td><strong>Agents 1, 4, 5, 6 (LLM agents)</strong></td>
+          <td><span class="owner-badge ob1">👨‍💻 Member 01</span></td>
+          <td style="color:var(--muted);font-size:11px">Groq API key ready</td>
+          <td><span class="pri-badge pri-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td><strong>Node.js Orchestrator + REST API</strong></td>
+          <td><span class="owner-badge ob2">⚙️ Member 02</span></td>
+          <td style="color:var(--muted);font-size:11px">Member 01 FastAPI URL</td>
+          <td><span class="pri-badge pri-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td><strong>PostgreSQL schema + queries</strong></td>
+          <td><span class="owner-badge ob2">⚙️ Member 02</span></td>
+          <td style="color:var(--muted);font-size:11px">Member 04 DB connection string</td>
+          <td><span class="pri-badge pri-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td><strong>Next.js UI — all pages</strong></td>
+          <td><span class="owner-badge ob3">🎨 Member 03</span></td>
+          <td style="color:var(--muted);font-size:11px">Member 02 API endpoints ready</td>
+          <td><span class="pri-badge pri-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td><strong>Score Dashboard + Report UI</strong></td>
+          <td><span class="owner-badge ob3">🎨 Member 03</span></td>
+          <td style="color:var(--muted);font-size:11px">JSON structure from Member 01</td>
+          <td><span class="pri-badge pri-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td><strong>Agent 2 — Market (Google Trends)</strong></td>
+          <td><span class="owner-badge ob4">🔗 Member 04</span></td>
+          <td style="color:var(--muted);font-size:11px">pytrends library + free API</td>
+          <td><span class="pri-badge pri-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td><strong>Agent 3 — Competitor (SerpAPI)</strong></td>
+          <td><span class="owner-badge ob4">🔗 Member 04</span></td>
+          <td style="color:var(--muted);font-size:11px">SerpAPI free tier key</td>
+          <td><span class="pri-badge pri-med">MEDIUM</span></td>
+        </tr>
+        <tr>
+          <td><strong>Neon.tech DB + GitHub CI/CD</strong></td>
+          <td><span class="owner-badge ob4">🔗 Member 04</span></td>
+          <td style="color:var(--muted);font-size:11px">Nothing — start Week 1</td>
+          <td><span class="pri-badge pri-high">HIGH</span></td>
+        </tr>
+        <tr>
+          <td><strong>End-to-End testing + QA</strong></td>
+          <td><span class="owner-badge ob4">🔗 Member 04</span></td>
+          <td style="color:var(--muted);font-size:11px">All members' work connected</td>
+          <td><span class="pri-badge pri-med">MEDIUM</span></td>
+        </tr>
+        <tr>
+          <td><strong>Project Documentation + Report</strong></td>
+          <td><span class="owner-badge ob4">🔗 Member 04</span></td>
+          <td style="color:var(--muted);font-size:11px">Final working system</td>
+          <td><span class="pri-badge pri-low">LOW</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PRO TIPS -->
+  <div class="sec-label">TEAM TIPS FOR SUCCESS</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-icon">📦</div>
+      <div class="tip-title">Use Mock JSON First</div>
+      <div class="tip-text">Member 3 shouldn't wait for Member 1 to finish AI agents. Member 1 should share the expected JSON structure on Day 1 so Member 3 can build UI with dummy data in parallel.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🔑</div>
+      <div class="tip-title">One .env File Per Member</div>
+      <div class="tip-text">Each member keeps their own local .env file with API keys. Never push keys to GitHub. Member 4 manages the production environment variables on all cloud platforms.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">📞</div>
+      <div class="tip-title">Daily 15-min Sync</div>
+      <div class="tip-text">Every day, each member shares: what they did, what they'll do next, and what's blocking them. This catches integration issues before they become big problems.</div>
+    </div>
+    <div class="tip-card">
+      <div class="tip-icon">🌿</div>
+      <div class="tip-title">Git Branch Per Member</div>
+      <div class="tip-text">Member 4 sets up GitHub. Each member works on their own branch (member1-ai, member2-backend, etc.) and creates Pull Requests to main. Member 4 reviews and merges.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
