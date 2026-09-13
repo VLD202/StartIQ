@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StartIQ – Team Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#F5F7FA; --white:#FFFFFF; --border:#E2E8F0; --text:#1A202C; --muted:#718096; --light:#EDF2F7;
+  --c1:#0284C7; --c1b:#E0F2FE;
+  --c2:#7C3AED; --c2b:#EDE9FE;
+  --c3:#059669; --c3b:#D1FAE5;
+  --c4:#D97706; --c4b:#FEF3C7;
+}
+body { font-family:'Plus Jakarta Sans',sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+.page { max-width:960px; margin:0 auto; padding:48px 24px 80px; }
+
+/* HEADER */
+.header { text-align:center; margin-bottom:52px; animation:fadeUp 0.5s ease both; }
+.header-badge { display:inline-block; background:#DBEAFE; color:#1D4ED8; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:5px 14px; border-radius:20px; margin-bottom:16px; }
+.header h1 { font-size:38px; font-weight:800; letter-spacing:-0.02em; line-height:1.15; margin-bottom:10px; }
+.header h1 span { color:var(--c1); }
+.header p { color:var(--muted); font-size:15px; }
+.stats-row { display:flex; justify-content:center; gap:10px; margin-top:22px; flex-wrap:wrap; }
+.stat { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:9px 18px; font-size:13px; font-weight:600; }
+.stat span { color:var(--muted); font-weight:400; font-size:12px; margin-left:4px; }
+
+/* SECTION HEADING */
+.sec-heading { display:flex; align-items:center; gap:12px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.14em; color:var(--muted); margin-bottom:18px; margin-top:48px; }
+.sec-heading::before,.sec-heading::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* FLOWCHART BOX */
+.flowchart { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:32px 28px; animation:fadeUp 0.5s 0.1s ease both; }
+.flow-title { text-align:center; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:26px; }
+
+/* Pipeline */
+.pipeline { display:flex; align-items:center; justify-content:center; gap:0; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
+.pipeline::-webkit-scrollbar { display:none; }
+.pipe-node { flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:6px; }
+.pipe-box { width:82px; padding:10px 6px; border-radius:10px; border:1.5px solid; text-align:center; transition:transform 0.15s,box-shadow 0.15s; cursor:default; }
+.pipe-box:hover { transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,0.09); }
+.pipe-icon { font-size:18px; margin-bottom:3px; }
+.pipe-name { font-size:9.5px; font-weight:700; line-height:1.3; }
+.pipe-owner { font-size:8.5px; font-weight:500; margin-top:2px; opacity:0.7; }
+.pipe-box.m1 { background:var(--c1b); border-color:var(--c1); color:var(--c1); }
+.pipe-box.m2 { background:var(--c2b); border-color:var(--c2); color:var(--c2); }
+.pipe-box.m3 { background:var(--c3b); border-color:var(--c3); color:var(--c3); }
+.pipe-box.m4 { background:var(--c4b); border-color:var(--c4); color:var(--c4); }
+.pipe-box.neutral { background:#F1F5F9; border-color:#CBD5E1; color:#475569; }
+
+.pipe-arrow { flex-shrink:0; display:flex; flex-direction:column; align-items:center; width:28px; gap:1px; }
+.arr-line { width:20px; height:2px; background:var(--border); }
+.arr-tip { font-size:14px; color:#94A3B8; line-height:1; }
+.arr-label { font-size:7.5px; color:var(--muted); font-family:'Fira Code',monospace; white-space:nowrap; }
+
+/* Legend */
+.flow-legend { display:flex; justify-content:center; gap:18px; flex-wrap:wrap; margin-top:22px; padding-top:18px; border-top:1px solid var(--border); }
+.leg-item { display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; color:var(--text); }
+.leg-dot { width:10px; height:10px; border-radius:3px; }
+
+/* Data Steps */
+.data-flow { margin-top:26px; padding-top:22px; border-top:1px solid var(--border); }
+.df-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:14px; text-align:center; }
+.data-steps { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; }
+.ds { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 8px; text-align:center; }
+.ds-num { width:20px; height:20px; border-radius:50%; color:white; font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 6px; }
+.ds-label { font-size:9.5px; font-weight:700; color:var(--text); line-height:1.3; }
+.ds-desc { font-size:8px; color:var(--muted); margin-top:3px; line-height:1.4; }
+
+/* TEAM GRID */
+.team-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.card { background:var(--white); border:1px solid var(--border); border-radius:16px; overflow:hidden; transition:box-shadow 0.2s; animation:fadeUp 0.5s ease both; }
+.card:hover { box-shadow:0 8px 32px rgba(0,0,0,0.07); }
+.card:nth-child(1){animation-delay:0.1s} .card:nth-child(2){animation-delay:0.2s}
+.card:nth-child(3){animation-delay:0.3s} .card:nth-child(4){animation-delay:0.4s}
+.card-stripe { height:4px; }
+.card[data-m="1"] .card-stripe{background:var(--c1)} .card[data-m="2"] .card-stripe{background:var(--c2)}
+.card[data-m="3"] .card-stripe{background:var(--c3)} .card[data-m="4"] .card-stripe{background:var(--c4)}
+
+.card-head { padding:18px 20px 14px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.member-tag { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:3px; }
+.card[data-m="1"] .member-tag{color:var(--c1)} .card[data-m="2"] .member-tag{color:var(--c2)}
+.card[data-m="3"] .member-tag{color:var(--c3)} .card[data-m="4"] .member-tag{color:var(--c4)}
+.member-title { font-size:16px; font-weight:800; color:var(--text); line-height:1.2; }
+.member-sub { font-size:11.5px; color:var(--muted); margin-top:2px; }
+
+.agent-badges { display:flex; flex-direction:column; gap:5px; align-items:flex-end; flex-shrink:0; }
+.agent-badge { font-size:9.5px; font-weight:700; padding:3px 9px; border-radius:6px; border:1.5px solid; white-space:nowrap; }
+.card[data-m="1"] .agent-badge{color:var(--c1);border-color:var(--c1);background:var(--c1b)}
+.card[data-m="2"] .agent-badge{color:var(--c2);border-color:var(--c2);background:var(--c2b)}
+.card[data-m="3"] .agent-badge{color:var(--c3);border-color:var(--c3);background:var(--c3b)}
+.card[data-m="4"] .agent-badge{color:var(--c4);border-color:var(--c4);background:var(--c4b)}
+
+.card-body { padding:16px 20px 20px; }
+.inner-label { font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:8px; margin-top:14px; display:flex; align-items:center; gap:8px; }
+.inner-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.inner-label:first-child { margin-top:0; }
+
+.task-list { list-style:none; display:flex; flex-direction:column; gap:5px; }
+.task-list li { display:flex; align-items:flex-start; gap:8px; font-size:12px; color:#4A5568; line-height:1.5; }
+.task-icon { width:17px; height:17px; border-radius:4px; flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; font-size:8.5px; font-weight:700; color:white; }
+.card[data-m="1"] .task-icon{background:var(--c1)} .card[data-m="2"] .task-icon{background:var(--c2)}
+.card[data-m="3"] .task-icon{background:var(--c3)} .card[data-m="4"] .task-icon{background:var(--c4)}
+
+.chip-row { display:flex; flex-wrap:wrap; gap:5px; }
+.chip { font-family:'Fira Code',monospace; font-size:10px; font-weight:500; background:var(--light); border:1px solid var(--border); color:#4A5568; padding:2px 8px; border-radius:5px; }
+.chip.free { color:#059669; background:#D1FAE5; border-color:#6EE7B7; }
+.chip.free::before { content:'✓ '; }
+
+.out-block { background:#F8FAFC; border:1px solid var(--border); border-radius:8px; padding:11px 13px; font-family:'Fira Code',monospace; font-size:10px; line-height:1.75; overflow-x:auto; }
+.jk{color:#2563EB} .js{color:#059669} .jn{color:#D97706} .jb{color:#7C3AED} .jc{color:#94A3B8;font-style:italic}
+
+.week-row { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.week-box { background:var(--bg); border:1px solid var(--border); border-radius:7px; padding:9px 11px; }
+.wb-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin-bottom:3px; }
+.wb-text { font-size:11px; color:#4A5568; line-height:1.45; }
+
+/* TABLE */
+.table-wrap { background:var(--white); border:1px solid var(--border); border-radius:16px; overflow:hidden; animation:fadeUp 0.5s 0.5s ease both; }
+table { width:100%; border-collapse:collapse; font-size:12.5px; }
+thead tr { background:var(--light); }
+th { text-align:left; padding:10px 15px; font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); border-bottom:1px solid var(--border); }
+td { padding:10px 15px; border-bottom:1px solid var(--border); color:#4A5568; vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:#FAFBFC; }
+.owner-chip { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700; }
+.own1{background:var(--c1b);color:var(--c1)} .own2{background:var(--c2b);color:var(--c2)}
+.own3{background:var(--c3b);color:var(--c3)} .own4{background:var(--c4b);color:var(--c4)}
+
+/* FOOTER */
+.footer { text-align:center; margin-top:56px; padding-top:24px; border-top:1px solid var(--border); font-size:12px; color:var(--muted); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+@media(max-width:700px) {
+  .team-grid{grid-template-columns:1fr}
+  .data-steps{grid-template-columns:repeat(3,1fr)}
+  .pipeline{justify-content:flex-start}
+  .header h1{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-badge">StartIQ · Team Division Plan</div>
+    <h1>4 Members. 6 Agents.<br><span>1 AI Co-Founder.</span></h1>
+    <p>Har member ke paas ek clear role hai — kya banana hai, kaise banana hai, kahan se free API leni hai.</p>
+    <div class="stats-row">
+      <div class="stat">👥 4 Members <span>fully divided</span></div>
+      <div class="stat">🤖 6 Agents <span>each owned</span></div>
+      <div class="stat">💸 Free APIs Only <span>no paid LLM</span></div>
+      <div class="stat">🐏 Low RAM <span>Colab optimized</span></div>
+    </div>
+  </div>
+
+  <!-- FLOWCHART -->
+  <div class="sec-heading">Agent Pipeline — Kaisa kaam karta hai poora system</div>
+  <div class="flowchart">
+    <div class="flow-title">User ke idea se lekar final investment verdict tak ka poora safar</div>
+
+    <div class="pipeline">
+      <div class="pipe-node">
+        <div class="pipe-box neutral">
+          <div class="pipe-icon">🧑</div>
+          <div class="pipe-name">User Input</div>
+          <div class="pipe-owner">Startup idea</div>
+        </div>
+      </div>
+      <div class="pipe-arrow"><div class="arr-line"></div><div class="arr-tip">›</div><div class="arr-label">text</div></div>
+
+      <div class="pipe-node">
+        <div class="pipe-box m1">
+          <div class="pipe-icon">💡</div>
+          <div class="pipe-name">Idea Agent</div>
+          <div class="pipe-owner">Member 1</div>
+        </div>
+      </div>
+      <div class="pipe-arrow"><div class="arr-line"></div><div class="arr-tip">›</div><div class="arr-label">JSON</div></div>
+
+      <div class="pipe-node">
+        <div class="pipe-box m1">
+          <div class="pipe-icon">📊</div>
+          <div class="pipe-name">Market Agent</div>
+          <div class="pipe-owner">Member 1</div>
+        </div>
+      </div>
+      <div class="pipe-arrow"><div class="arr-line"></div><div class="arr-tip">›</div><div class="arr-label">JSON</div></div>
+
+      <div class="pipe-node">
+        <div class="pipe-box m2">
+          <div class="pipe-icon">🔍</div>
+          <div class="pipe-name">Competitor Agent</div>
+          <div class="pipe-owner">Member 2</div>
+        </div>
+      </div>
+      <div class="pipe-arrow"><div class="arr-line"></div><div class="arr-tip">›</div><div class="arr-label">JSON</div></div>
+
+      <div class="pipe-node">
+        <div class="pipe-box m2">
+          <div class="pipe-icon">⚠️</div>
+          <div class="pipe-name">Risk Agent</div>
+          <div class="pipe-owner">Member 2</div>
+        </div>
+      </div>
+      <div class="pipe-arrow"><div class="arr-line"></div><div class="arr-tip">›</div><div class="arr-label">JSON</div></div>
+
+      <div class="pipe-node">
+        <div class="pipe-box m3">
+          <div class="pipe-icon">💰</div>
+          <div class="pipe-name">Finance Agent</div>
+          <div class="pipe-owner">Member 3</div>
+        </div>
+      </div>
+      <div class="pipe-arrow"><div class="arr-line"></div><div class="arr-tip">›</div><div class="arr-label">all JSON</div></div>
+
+      <div class="pipe-node">
+        <div class="pipe-box m4">
+          <div class="pipe-icon">🏆</div>
+          <div class="pipe-name">Final Scorer</div>
+          <div class="pipe-owner">Member 4</div>
+        </div>
+      </div>
+      <div class="pipe-arrow"><div class="arr-line"></div><div class="arr-tip">›</div><div class="arr-label">score</div></div>
+
+      <div class="pipe-node">
+        <div class="pipe-box neutral">
+          <div class="pipe-icon">📋</div>
+          <div class="pipe-name">Dashboard</div>
+          <div class="pipe-owner">Member 4</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="flow-legend">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--c1)"></div> Member 1 — Idea + Market</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--c2)"></div> Member 2 — Competitor + Risk</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--c3)"></div> Member 3 — Finance + Backend</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--c4)"></div> Member 4 — Final Score + UI</div>
+    </div>
+
+    <!-- Data Steps -->
+    <div class="data-flow">
+      <div class="df-title">Data kaisa travel karta hai — step by step</div>
+      <div class="data-steps">
+        <div class="ds">
+          <div class="ds-num" style="background:var(--c1)">1</div>
+          <div class="ds-label">User idea type karta hai</div>
+          <div class="ds-desc">"AI tutor for class 10" — plain text input</div>
+        </div>
+        <div class="ds">
+          <div class="ds-num" style="background:var(--c1)">2</div>
+          <div class="ds-label">Idea Agent process karta hai</div>
+          <div class="ds-desc">Problem, solution, feasibility score — JSON me</div>
+        </div>
+        <div class="ds">
+          <div class="ds-num" style="background:var(--c2)">3</div>
+          <div class="ds-label">Market + Competitor check</div>
+          <div class="ds-desc">TAM/SAM/SOM + SWOT + direct competitors</div>
+        </div>
+        <div class="ds">
+          <div class="ds-num" style="background:var(--c2)">4</div>
+          <div class="ds-label">Risk analysis hota hai</div>
+          <div class="ds-desc">Execution challenges, innovation uniqueness</div>
+        </div>
+        <div class="ds">
+          <div class="ds-num" style="background:var(--c3)">5</div>
+          <div class="ds-label">Finance calculate hota hai</div>
+          <div class="ds-desc">Cost, revenue model, break-even months</div>
+        </div>
+        <div class="ds">
+          <div class="ds-num" style="background:var(--c4)">6</div>
+          <div class="ds-label">Final Score + Verdict</div>
+          <div class="ds-desc">"Investment Ready: Yes" — dashboard pe show</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEAM CARDS -->
+  <div class="sec-heading">4 Members ka Full Breakdown</div>
+  <div class="team-grid">
+
+    <!-- M1 -->
+    <div class="card" data-m="1">
+      <div class="card-stripe"></div>
+      <div class="card-head">
+        <div>
+          <div class="member-tag">Member 01 · AI Layer</div>
+          <div class="member-title">Idea + Market Analyst</div>
+          <div class="member-sub">Pipeline ka pehla insaan — foundation banata hai</div>
+        </div>
+        <div class="agent-badges">
+          <div class="agent-badge">💡 Idea Agent</div>
+          <div class="agent-badge">📊 Market Agent</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="inner-label">Kya karna hai</div>
+        <ul class="task-list">
+          <li><span class="task-icon">1</span>Python + FastAPI ka server banana — ye sara AI ka base hai, baaki sab iske upar chalega</li>
+          <li><span class="task-icon">2</span>Idea Agent banana: LangChain se problem, solution, feasibility, clarity — sab structured JSON me extract karo</li>
+          <li><span class="task-icon">3</span>Market Agent banana: TAM/SAM/SOM, market trends, growth rate — JSON me</li>
+          <li><span class="task-icon">4</span>Google Colab me test karo pehle — free GPU milega, 12GB RAM bhi</li>
+          <li><span class="task-icon">5</span>Pydantic se har output validate karo — random text kabhi nahi aana chahiye</li>
+        </ul>
+        <div class="inner-label">Free APIs kahan se loge</div>
+        <div class="chip-row">
+          <span class="chip free">Groq — LLaMA 3.1 70B</span>
+          <span class="chip free">Gemini 1.5 Flash</span>
+          <span class="chip free">OpenRouter Free Tier</span>
+          <span class="chip">console.groq.com</span>
+          <span class="chip">aistudio.google.com</span>
+        </div>
+        <div class="inner-label">Output JSON</div>
+        <div class="out-block">
+{ <span class="jk">"problem_statement"</span>: <span class="js">"Students lack personalized..."</span>,<br>
+&nbsp;&nbsp;<span class="jk">"feasibility_score"</span>: <span class="jn">8.2</span>, <span class="jk">"clarity_score"</span>: <span class="jn">9.0</span>,<br>
+&nbsp;&nbsp;<span class="jk">"TAM"</span>: <span class="js">"$45B"</span>, <span class="jk">"SAM"</span>: <span class="js">"$8B"</span>,<br>
+&nbsp;&nbsp;<span class="jk">"growth_rate"</span>: <span class="js">"28% YoY"</span> }
+        </div>
+        <div class="inner-label">2-Week Sprint</div>
+        <div class="week-row">
+          <div class="week-box"><div class="wb-label">Week 1</div><div class="wb-text">FastAPI + LangChain setup, Idea Agent prompt likho, Colab pe JSON test karo</div></div>
+          <div class="week-box"><div class="wb-label">Week 2</div><div class="wb-text">Market Agent banana, TAM logic, free API connect, endpoint expose karo Member 3 ke liye</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M2 -->
+    <div class="card" data-m="2">
+      <div class="card-stripe"></div>
+      <div class="card-head">
+        <div>
+          <div class="member-tag">Member 02 · Intelligence</div>
+          <div class="member-title">Competitor + Risk Expert</div>
+          <div class="member-sub">SWOT aur risk score — dono is ek ki zimmedari</div>
+        </div>
+        <div class="agent-badges">
+          <div class="agent-badge">🔍 Competitor Agent</div>
+          <div class="agent-badge">⚠️ Risk Agent</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="inner-label">Kya karna hai</div>
+        <ul class="task-list">
+          <li><span class="task-icon">1</span>Competitor Agent banana: direct + indirect competitors list karo, SWOT style comparison JSON me</li>
+          <li><span class="task-icon">2</span>Risk Agent banana: risk score, execution challenges, innovation uniqueness score nikalo</li>
+          <li><span class="task-icon">3</span>LangChain sequential chains likhna — ek agent ke baad doosra automatically call ho</li>
+          <li><span class="task-icon">4</span>Member 1 ke same FastAPI server pe /competitor aur /risk routes add karo</li>
+          <li><span class="task-icon">5</span>JSON parse safely karo — agar LLM kuch bhi galat de toh try/except se handle karo</li>
+        </ul>
+        <div class="inner-label">Free APIs kahan se loge</div>
+        <div class="chip-row">
+          <span class="chip free">Groq — Mixtral 8x7B</span>
+          <span class="chip free">Gemini Flash</span>
+          <span class="chip free">DuckDuckGo Search API</span>
+          <span class="chip">openrouter.ai/keys</span>
+        </div>
+        <div class="inner-label">Output JSON</div>
+        <div class="out-block">
+{ <span class="jk">"direct"</span>: [<span class="js">"IdeaFlip"</span>, <span class="js">"Validator AI"</span>],<br>
+&nbsp;&nbsp;<span class="jk">"swot"</span>: { <span class="jk">"strengths"</span>: [...], <span class="jk">"threats"</span>: [...] },<br>
+&nbsp;&nbsp;<span class="jk">"risk_score"</span>: <span class="jn">6.4</span>,<br>
+&nbsp;&nbsp;<span class="jk">"innovation_uniqueness"</span>: <span class="jn">8.1</span> }
+        </div>
+        <div class="inner-label">2-Week Sprint</div>
+        <div class="week-row">
+          <div class="week-box"><div class="wb-label">Week 1</div><div class="wb-text">Competitor Agent prompt design, SWOT JSON structure, Colab pe full test</div></div>
+          <div class="week-box"><div class="wb-label">Week 2</div><div class="wb-text">Risk Agent scoring logic likhna, Member 1 ke server se integrate karo, routes test</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M3 -->
+    <div class="card" data-m="3">
+      <div class="card-stripe"></div>
+      <div class="card-head">
+        <div>
+          <div class="member-tag">Member 03 · Backend Lead</div>
+          <div class="member-title">Finance Agent + Node.js</div>
+          <div class="member-sub">Revenue brain + poora orchestration system</div>
+        </div>
+        <div class="agent-badges">
+          <div class="agent-badge">💰 Finance Agent</div>
+          <div class="agent-badge">⚙️ Orchestrator</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="inner-label">Kya karna hai</div>
+        <ul class="task-list">
+          <li><span class="task-icon">1</span>Finance Agent banana: cost estimation, revenue model, break-even months, profit projection</li>
+          <li><span class="task-icon">2</span>Node.js + Express main server banana — ye sab Python agents ko orchestrate karega</li>
+          <li><span class="task-icon">3</span>Node se Python FastAPI ko HTTP call karo — POST /api/analyze route likhna</li>
+          <li><span class="task-icon">4</span>Supabase (free PostgreSQL) — idea + result database me save karo</li>
+          <li><span class="task-icon">5</span>.env me API keys safely rakhna — kabhi bhi hardcode mat karo</li>
+        </ul>
+        <div class="inner-label">Free Tools kahan se loge</div>
+        <div class="chip-row">
+          <span class="chip free">Gemini 1.5 Flash</span>
+          <span class="chip free">Supabase — Free PostgreSQL</span>
+          <span class="chip free">Railway.app deploy</span>
+          <span class="chip">supabase.com/dashboard</span>
+        </div>
+        <div class="inner-label">Node Routes + Finance Output</div>
+        <div class="out-block">
+<span class="jc">// Node.js Express Routes</span><br>
+<span class="jb">POST</span> /api/analyze  → <span class="jc">sab agents trigger karo</span><br>
+<span class="jb">GET</span>&nbsp; /api/result/:id → <span class="jc">stored result fetch karo</span><br><br>
+{ <span class="jk">"monthly_burn"</span>: <span class="js">"$2,400"</span>,<br>
+&nbsp;&nbsp;<span class="jk">"break_even_months"</span>: <span class="jn">14</span>,<br>
+&nbsp;&nbsp;<span class="jk">"funding_needed"</span>: <span class="js">"$50K"</span> }
+        </div>
+        <div class="inner-label">2-Week Sprint</div>
+        <div class="week-row">
+          <div class="week-box"><div class="wb-label">Week 1</div><div class="wb-text">Finance Agent prompt + revenue/cost formula design, Colab pe test, JSON output fix</div></div>
+          <div class="week-box"><div class="wb-label">Week 2</div><div class="wb-text">Node.js server banana, Supabase connect, Python-Node bridge likhna, Postman se test</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- M4 -->
+    <div class="card" data-m="4">
+      <div class="card-stripe"></div>
+      <div class="card-head">
+        <div>
+          <div class="member-tag">Member 04 · Frontend + Final Agent</div>
+          <div class="member-title">Final Scorer + Next.js UI</div>
+          <div class="member-sub">Verdict deta hai aur dikhata bhi hai</div>
+        </div>
+        <div class="agent-badges">
+          <div class="agent-badge">🏆 Final Scoring Agent</div>
+          <div class="agent-badge">🎨 Next.js UI</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="inner-label">Kya karna hai</div>
+        <ul class="task-list">
+          <li><span class="task-icon">1</span>Final Scoring Agent banana: 5 agents ke JSON aggregate karo, weighted overall score nikalo</li>
+          <li><span class="task-icon">2</span>"Investment Ready: Yes/No" verdict dena + rating — Seed Ready / MVP Stage / Not Ready</li>
+          <li><span class="task-icon">3</span>Next.js frontend banana — idea input form + results dashboard with score cards</li>
+          <li><span class="task-icon">4</span>Recharts se bar chart banana — har agent ka score visually dikhao</li>
+          <li><span class="task-icon">5</span>Vercel pe free deploy karo, team ke liye Postman collection maintain karo</li>
+        </ul>
+        <div class="inner-label">Free Tools kahan se loge</div>
+        <div class="chip-row">
+          <span class="chip free">Vercel — Free Deploy</span>
+          <span class="chip free">Recharts / Chart.js</span>
+          <span class="chip free">TailwindCSS</span>
+          <span class="chip free">Shadcn UI</span>
+        </div>
+        <div class="inner-label">Final Score Output</div>
+        <div class="out-block">
+{ <span class="jk">"overall_score"</span>: <span class="jn">78.4</span>,<br>
+&nbsp;&nbsp;<span class="jk">"investment_ready"</span>: <span class="jb">true</span>,<br>
+&nbsp;&nbsp;<span class="jk">"rating"</span>: <span class="js">"Seed Ready 🚀"</span>,<br>
+&nbsp;&nbsp;<span class="jk">"idea"</span>:<span class="jn">84</span>, <span class="jk">"market"</span>:<span class="jn">76</span>, <span class="jk">"finance"</span>:<span class="jn">72</span>, <span class="jk">"risk"</span>:<span class="jn">88</span> }
+        </div>
+        <div class="inner-label">2-Week Sprint</div>
+        <div class="week-row">
+          <div class="week-box"><div class="wb-label">Week 1</div><div class="wb-text">Scoring Agent weighted formula likhna, Python test, mock JSON data se trial</div></div>
+          <div class="week-box"><div class="wb-label">Week 2</div><div class="wb-text">Next.js UI, form + dashboard, Node API connect karo, Vercel deploy karo</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="sec-heading">Quick Reference — Kaunsa agent kaun banayega</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Agent</th><th>Owner</th><th>Input leta hai</th><th>Output deta hai</th><th>Free LLM</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>💡 Idea Agent</td><td><span class="owner-chip own1">Member 1</span></td><td>User ka startup idea (text)</td><td>problem, feasibility, clarity JSON</td><td><span class="chip free">Groq LLaMA 3.1</span></td></tr>
+        <tr><td>📊 Market Agent</td><td><span class="owner-chip own1">Member 1</span></td><td>Idea Agent ka JSON</td><td>TAM/SAM/SOM, trends JSON</td><td><span class="chip free">Gemini Flash</span></td></tr>
+        <tr><td>🔍 Competitor Agent</td><td><span class="owner-chip own2">Member 2</span></td><td>Market Agent ka JSON</td><td>competitors list, SWOT JSON</td><td><span class="chip free">Mixtral via Groq</span></td></tr>
+        <tr><td>⚠️ Risk Agent</td><td><span class="owner-chip own2">Member 2</span></td><td>Sabke pehle ke JSONs</td><td>risk_score, challenges JSON</td><td><span class="chip free">OpenRouter Free</span></td></tr>
+        <tr><td>💰 Finance Agent</td><td><span class="owner-chip own3">Member 3</span></td><td>Sabke pehle ke JSONs</td><td>cost, revenue, break-even JSON</td><td><span class="chip free">Gemini Flash</span></td></tr>
+        <tr><td>🏆 Final Scoring Agent</td><td><span class="owner-chip own4">Member 4</span></td><td>Sabke 5 agent JSONs</td><td>overall_score, verdict JSON</td><td><span class="chip free">Groq LLaMA 3.1</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    StartIQ Team Plan · 4 members · 6 agents · Free APIs only · Low RAM optimized<br>
+    <small style="display:block;margin-top:6px;color:#CBD5E1">Groq: console.groq.com &nbsp;·&nbsp; Gemini: aistudio.google.com &nbsp;·&nbsp; OpenRouter: openrouter.ai &nbsp;·&nbsp; Supabase: supabase.com &nbsp;·&nbsp; Vercel: vercel.com</small>
+  </div>
+
+</div>
+</body>
+</html>

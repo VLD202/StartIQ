@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StartIQ – Revised Team Division</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --bg: #f4f6f9;
+  --white: #ffffff;
+  --ink: #14192a;
+  --ink2: #3a4260;
+  --muted: #8892aa;
+  --border: #dde3ef;
+
+  --m1: #2563eb;  --m1l: #eff4ff;  --m1m: rgba(37,99,235,0.12);
+  --m2: #059669;  --m2l: #ecfdf5;  --m2m: rgba(5,150,105,0.12);
+  --m3: #dc5a09;  --m3l: #fff4ed;  --m3m: rgba(220,90,9,0.12);
+  --m4: #9333ea;  --m4l: #faf5ff;  --m4m: rgba(147,51,234,0.12);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); font-family:'Outfit',sans-serif; color:var(--ink); }
+
+body::before {
+  content:''; position:fixed; inset:0;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 32px 32px; opacity:0.4; pointer-events:none; z-index:0;
+}
+
+.page { position:relative; z-index:1; max-width:1080px; margin:0 auto; padding:48px 22px 90px; }
+
+/* HEADER */
+.header { text-align:center; margin-bottom:52px; animation:up 0.5s ease both; }
+.eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:100px; padding:7px 20px; margin-bottom:16px;
+  font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:2px;
+}
+.pulse { width:7px; height:7px; border-radius:50%; background:var(--m1); animation:pulse 2s infinite; }
+h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(44px,7vw,80px); letter-spacing:3px; line-height:0.95; margin-bottom:12px; }
+h1 em { font-style:normal; color:var(--m1); }
+.sub { font-size:15px; color:var(--muted); max-width:540px; margin:0 auto; line-height:1.7; }
+
+/* SECTION LABEL */
+.slabel {
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:3px;
+  color:var(--muted); margin-bottom:14px;
+  display:flex; align-items:center; gap:12px;
+}
+.slabel::after { content:''; flex:1; height:1px; background:var(--border); }
+.mb40 { margin-bottom:40px; }
+.mb28 { margin-bottom:28px; }
+
+/* ── BIG PRINCIPLE BOX ── */
+.principle-box {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+  border-radius:20px; padding:28px 32px; margin-bottom:40px;
+  display:flex; align-items:center; gap:24px;
+  animation:up 0.5s ease 0.1s both;
+  box-shadow: 0 8px 32px rgba(37,99,235,0.2);
+}
+.principle-icon { font-size:40px; flex-shrink:0; }
+.principle-title { font-size:20px; font-weight:800; color:white; margin-bottom:6px; }
+.principle-text { font-size:13px; color:rgba(255,255,255,0.75); line-height:1.7; }
+.principle-pills { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+.pp {
+  background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25);
+  border-radius:100px; padding:4px 12px;
+  font-size:11px; color:white; font-family:'JetBrains Mono',monospace;
+}
+
+/* ── MEMBER CARDS (4 big cards) ── */
+.members-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:40px;
+}
+@media(max-width:650px){ .members-grid { grid-template-columns:1fr; } }
+
+.member-big {
+  background:var(--white); border:2px solid var(--border);
+  border-radius:22px; overflow:hidden;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+  animation:up 0.5s ease both;
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.member-big:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,0.1); }
+.member-big:nth-child(1){ animation-delay:0.15s; border-color:var(--m1); }
+.member-big:nth-child(2){ animation-delay:0.2s;  border-color:var(--m2); }
+.member-big:nth-child(3){ animation-delay:0.25s; border-color:var(--m3); }
+.member-big:nth-child(4){ animation-delay:0.3s;  border-color:var(--m4); }
+
+/* card top strip */
+.card-top { padding:20px 22px 16px; border-bottom:2px solid var(--border); }
+.card-meta { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+.card-num {
+  font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700;
+  padding:4px 12px; border-radius:100px; border:1.5px solid;
+}
+.m1b .card-num { background:var(--m1l); border-color:var(--m1); color:var(--m1); }
+.m2b .card-num { background:var(--m2l); border-color:var(--m2); color:var(--m2); }
+.m3b .card-num { background:var(--m3l); border-color:var(--m3); color:var(--m3); }
+.m4b .card-num { background:var(--m4l); border-color:var(--m4); color:var(--m4); }
+
+.card-emoji { font-size:28px; }
+.card-title { font-size:17px; font-weight:800; color:var(--ink); margin-bottom:2px; }
+.card-sub { font-size:11px; font-family:'JetBrains Mono',monospace; color:var(--muted); }
+
+/* AGENT HIGHLIGHT */
+.agent-highlight {
+  border-radius:12px; padding:14px 16px; border:1.5px solid;
+  display:flex; align-items:flex-start; gap:12px; margin-bottom:0;
+}
+.m1b .agent-highlight { background:var(--m1l); border-color:var(--m1); }
+.m2b .agent-highlight { background:var(--m2l); border-color:var(--m2); }
+.m3b .agent-highlight { background:var(--m3l); border-color:var(--m3); }
+.m4b .agent-highlight { background:var(--m4l); border-color:var(--m4); }
+
+.ah-icon { font-size:24px; flex-shrink:0; }
+.ah-label { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:2px; margin-bottom:3px; }
+.m1b .ah-label { color:var(--m1); }
+.m2b .ah-label { color:var(--m2); }
+.m3b .ah-label { color:var(--m3); }
+.m4b .ah-label { color:var(--m4); }
+
+.ah-name { font-size:14px; font-weight:800; color:var(--ink); margin-bottom:3px; }
+.ah-desc { font-size:11px; color:var(--ink2); line-height:1.5; }
+.ah-outputs { margin-top:6px; display:flex; flex-wrap:wrap; gap:4px; }
+.ah-out {
+  font-family:'JetBrains Mono',monospace; font-size:9px;
+  background:rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.08);
+  border-radius:100px; padding:2px 7px; color:var(--ink2);
+}
+
+/* other tasks */
+.card-tasks { padding:16px 22px; }
+.task-label {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:2px;
+  color:var(--muted); margin-bottom:10px;
+}
+.task-row { display:flex; align-items:flex-start; gap:10px; padding:8px 0; border-bottom:1px solid var(--border); }
+.task-row:last-child { border-bottom:none; }
+.task-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.m1b .task-dot { background:var(--m1); }
+.m2b .task-dot { background:var(--m2); }
+.m3b .task-dot { background:var(--m3); }
+.m4b .task-dot { background:var(--m4); }
+.task-name { font-size:12px; font-weight:700; color:var(--ink); margin-bottom:1px; }
+.task-note { font-size:11px; color:var(--muted); line-height:1.4; }
+.task-wk {
+  margin-left:auto; flex-shrink:0;
+  font-family:'JetBrains Mono',monospace; font-size:9px;
+  padding:2px 8px; border-radius:100px; border:1px solid;
+}
+.m1b .task-wk { background:var(--m1m); border-color:rgba(37,99,235,0.25); color:var(--m1); }
+.m2b .task-wk { background:var(--m2m); border-color:rgba(5,150,105,0.25); color:var(--m2); }
+.m3b .task-wk { background:var(--m3m); border-color:rgba(220,90,9,0.25); color:var(--m3); }
+.m4b .task-wk { background:var(--m4m); border-color:rgba(147,51,234,0.25); color:var(--m4); }
+
+/* ── AGENT PIPELINE FLOW ── */
+.pipeline-section { margin-bottom:40px; animation:up 0.5s ease 0.35s both; }
+.pipeline-box {
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:20px; padding:28px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.pipeline-title { font-size:15px; font-weight:800; margin-bottom:6px; }
+.pipeline-sub { font-size:12px; color:var(--muted); margin-bottom:24px; font-family:'JetBrains Mono',monospace; }
+
+.pipe-flow { display:flex; align-items:stretch; gap:0; flex-wrap:nowrap; overflow-x:auto; padding-bottom:8px; }
+
+.pipe-node {
+  flex-shrink:0; border-radius:14px; padding:14px 16px; text-align:center;
+  border:1.5px solid; min-width:140px; transition:transform 0.2s;
+}
+.pipe-node:hover { transform:translateY(-2px); }
+
+.pn1 { background:var(--m1l); border-color:var(--m1); }
+.pn2 { background:var(--m2l); border-color:var(--m2); }
+.pn3 { background:var(--m3l); border-color:var(--m3); }
+.pn4 { background:var(--m4l); border-color:var(--m4); }
+.pn-shared { background:#f1f5f9; border-color:#cbd5e1; border-style:dashed; }
+
+.pn-owner { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:1px; margin-bottom:4px; }
+.pn1 .pn-owner { color:var(--m1); }
+.pn2 .pn-owner { color:var(--m2); }
+.pn3 .pn-owner { color:var(--m3); }
+.pn4 .pn-owner { color:var(--m4); }
+.pn-shared .pn-owner { color:var(--muted); }
+
+.pn-emoji { font-size:20px; margin-bottom:4px; }
+.pn-name { font-size:12px; font-weight:800; color:var(--ink); margin-bottom:2px; }
+.pn-sub { font-size:10px; color:var(--muted); }
+
+.pipe-arrow {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:0 8px; flex-shrink:0; gap:2px;
+}
+.pipe-arrow-sym { font-size:16px; color:var(--border); }
+.pipe-arrow-lbl { font-size:9px; font-family:'JetBrains Mono',monospace; color:var(--muted); white-space:nowrap; }
+
+/* context pass */
+.context-note {
+  margin-top:16px; background:#f8faff;
+  border:1px solid #dde8ff; border-radius:10px;
+  padding:12px 16px; font-size:12px; color:var(--ink2); line-height:1.6;
+}
+.context-note strong { color:var(--m1); }
+
+/* ── 4-WEEK TIMELINE ── */
+.timeline-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:20px; overflow:hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+@media(max-width:650px){ .timeline-grid { grid-template-columns:1fr 1fr; } }
+
+.tl-col { padding:20px 16px; border-right:1.5px solid var(--border); }
+.tl-col:last-child { border-right:none; }
+
+.tl-week-badge {
+  display:inline-block; font-family:'JetBrains Mono',monospace;
+  font-size:10px; font-weight:700; letter-spacing:1px;
+  padding:5px 12px; border-radius:100px; margin-bottom:12px; border:1.5px solid;
+}
+.w1 .tl-week-badge { background:var(--m1l); border-color:var(--m1); color:var(--m1); }
+.w2 .tl-week-badge { background:var(--m2l); border-color:var(--m2); color:var(--m2); }
+.w3 .tl-week-badge { background:#fff4ed; border-color:var(--m3); color:var(--m3); }
+.w4 .tl-week-badge { background:var(--m4l); border-color:var(--m4); color:var(--m4); }
+
+.tl-heading { font-size:13px; font-weight:800; margin-bottom:12px; color:var(--ink); }
+
+.tl-item { display:flex; gap:8px; margin-bottom:7px; font-size:11px; color:var(--ink2); line-height:1.4; }
+.tl-bullet { flex-shrink:0; margin-top:4px; }
+.tl-item strong { color:var(--ink); font-weight:700; }
+
+/* ── SHARED RESPONSIBILITIES ── */
+.shared-box {
+  background:var(--white); border:1.5px solid var(--border);
+  border-radius:16px; padding:22px; animation:up 0.5s ease 0.5s both;
+  box-shadow:0 2px 12px rgba(0,0,0,0.04);
+}
+.shared-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:14px; }
+@media(max-width:600px){ .shared-grid { grid-template-columns:1fr; } }
+
+.shared-item {
+  display:flex; gap:12px; background:#f8f9fc;
+  border:1px solid var(--border); border-radius:10px; padding:12px;
+}
+.si-icon { font-size:18px; flex-shrink:0; }
+.si-title { font-size:12px; font-weight:700; margin-bottom:2px; }
+.si-desc { font-size:11px; color:var(--muted); line-height:1.4; }
+
+@keyframes up { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="eyebrow"><div class="pulse"></div>REVISED TEAM PLAN · EVERYONE BUILDS AN AGENT</div>
+    <h1>HAR MEMBER<br><em>EK AGENT</em></h1>
+    <p class="sub">Naya division — har member apna ek agent banayega (practice ke liye) PLUS apni dedicated layer ka kaam bhi karega. Sab seekhenge, koi idle nahi baithega.</p>
+  </div>
+
+  <!-- PRINCIPLE BOX -->
+  <div class="principle-box mb40">
+    <div class="principle-icon">⚖️</div>
+    <div>
+      <div class="principle-title">Division Ka Naya Formula</div>
+      <div class="principle-text">
+        Har member = <strong style="color:white">1 AI Agent (seekhne ke liye)</strong> + <strong style="color:white">1 Main Layer (project ke liye)</strong><br>
+        Agents 5 aur 6 split hain — Member 1 Agent 5 banayega, Member 2 Agent 6 banayega. Kyunki ye dono LLM-only hain aur kisi ek pe zyada load nahi padna chahiye.
+      </div>
+      <div class="principle-pills">
+        <span class="pp">M1 → Agent 1 + Agent 5 + Frontend</span>
+        <span class="pp">M2 → Agent 6 + Backend/Orchestrator</span>
+        <span class="pp">M3 → Agent 2 + Real Data APIs</span>
+        <span class="pp">M4 → Agent 3 + Agent 4 + DB + DevOps</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMBER CARDS -->
+  <div class="slabel mb28">DETAILED WORK BREAKDOWN — EACH MEMBER</div>
+  <div class="members-grid mb40">
+
+    <!-- MEMBER 1 -->
+    <div class="member-big m1b">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="card-num">MEMBER 01</span>
+          <span class="card-emoji">🎨</span>
+          <div>
+            <div class="card-title">Frontend + AI</div>
+            <div class="card-sub">Next.js UI + 2 Agents</div>
+          </div>
+        </div>
+        <div class="agent-highlight">
+          <div class="ah-icon">💡</div>
+          <div>
+            <div class="ah-label">AGENT 01 — YOUR AGENT</div>
+            <div class="ah-name">Idea Agent</div>
+            <div class="ah-desc">Startup idea ko analyze karo — problem, solution, innovation level, scores nikalo. Pehla agent hai, sabka foundation.</div>
+            <div class="ah-outputs">
+              <span class="ah-out">problem_statement</span>
+              <span class="ah-out">innovation_level</span>
+              <span class="ah-out">idea_score</span>
+              <span class="ah-out">verdict</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+        <div class="agent-highlight" style="opacity:0.75">
+          <div class="ah-icon">⚠️</div>
+          <div>
+            <div class="ah-label">AGENT 05 — BONUS AGENT</div>
+            <div class="ah-name">Risk Agent</div>
+            <div class="ah-desc">Agent 1 complete hone ke baad banao. LLM-only hai — same pattern follow karo. Risk scores, execution challenges, mitigation tips.</div>
+            <div class="ah-outputs">
+              <span class="ah-out">risk_score</span>
+              <span class="ah-out">execution_risks</span>
+              <span class="ah-out">mitigation_tips</span>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="card-tasks">
+        <div class="task-label">OTHER RESPONSIBILITIES</div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Next.js Project Setup</div>
+            <div class="task-note">App router, Tailwind config, folder structure, environment variables</div>
+          </div>
+          <span class="task-wk">W1</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Idea Submission Page</div>
+            <div class="task-note">Landing page with textarea + submit button + loading animation</div>
+          </div>
+          <span class="task-wk">W1</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Score Dashboard UI</div>
+            <div class="task-note">5 circular score rings, final big score, verdict card — all animated</div>
+          </div>
+          <span class="task-wk">W2</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Full Report Page</div>
+            <div class="task-note">Market bars, competitor table, SWOT grid, finance breakdown, risk panel, next steps</div>
+          </div>
+          <span class="task-wk">W3</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Deploy to Vercel</div>
+            <div class="task-note">Connect GitHub → Vercel, set backend URL env variable, go live</div>
+          </div>
+          <span class="task-wk">W4</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMBER 2 -->
+    <div class="member-big m2b">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="card-num">MEMBER 02</span>
+          <span class="card-emoji">⚙️</span>
+          <div>
+            <div class="card-title">Backend + Orchestrator</div>
+            <div class="card-sub">Node.js Pipeline + Agent 6</div>
+          </div>
+        </div>
+        <div class="agent-highlight">
+          <div class="ah-icon">🏆</div>
+          <div>
+            <div class="ah-label">AGENT 06 — YOUR AGENT</div>
+            <div class="ah-name">Final Scoring Agent</div>
+            <div class="ah-desc">Sabse important agent — saare 5 agents ka output leta hai aur ek final master JSON banata hai. Investment readiness, verdict, next steps.</div>
+            <div class="ah-outputs">
+              <span class="ah-out">final_score</span>
+              <span class="ah-out">investment_readiness</span>
+              <span class="ah-out">verdict</span>
+              <span class="ah-out">next_steps</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-tasks">
+        <div class="task-label">OTHER RESPONSIBILITIES</div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Express.js Project Setup</div>
+            <div class="task-note">Boilerplate, routing, middleware, .env config, folder structure</div>
+          </div>
+          <span class="task-wk">W1</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Build Orchestrator Pipeline</div>
+            <div class="task-note">Call agents 1→2→3→4→5→6 in sequence, pass context forward, collect all outputs</div>
+          </div>
+          <span class="task-wk">W2</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">REST API for Frontend</div>
+            <div class="task-note">POST /evaluate, GET /result/:run_id, GET /history — these 3 endpoints serve the frontend</div>
+          </div>
+          <span class="task-wk">W2</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">PostgreSQL Integration</div>
+            <div class="task-note">Save each agent output to DB using run_id. Work with Member 4 on schema.</div>
+          </div>
+          <span class="task-wk">W3</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Deploy Backend to Railway.app</div>
+            <div class="task-note">GitHub connect → Railway deploy → env vars set → give URL to Member 1</div>
+          </div>
+          <span class="task-wk">W4</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMBER 3 -->
+    <div class="member-big m3b">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="card-num">MEMBER 03</span>
+          <span class="card-emoji">🌐</span>
+          <div>
+            <div class="card-title">Real Data + Market</div>
+            <div class="card-sub">APIs + Agent 2</div>
+          </div>
+        </div>
+        <div class="agent-highlight">
+          <div class="ah-icon">📊</div>
+          <div>
+            <div class="ah-label">AGENT 02 — YOUR AGENT</div>
+            <div class="ah-name">Market Agent</div>
+            <div class="ah-desc">Sabse interesting agent — Google Trends se REAL search data fetch karo, phir LLM se TAM/SAM/SOM, market trends, growth potential analyze karo.</div>
+            <div class="ah-outputs">
+              <span class="ah-out">TAM/SAM/SOM</span>
+              <span class="ah-out">market_trends</span>
+              <span class="ah-out">growth_score</span>
+              <span class="ah-out">target_audience</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-tasks">
+        <div class="task-label">OTHER RESPONSIBILITIES</div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Google Trends API Setup</div>
+            <div class="task-note">Install pytrends, learn how to fetch keyword search trends, test with jewelry, food, tech keywords</div>
+          </div>
+          <span class="task-wk">W1</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">NewsAPI Integration</div>
+            <div class="task-note">Fetch recent industry news and inject into Agent 2 prompt for more accurate market context</div>
+          </div>
+          <span class="task-wk">W2</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Keyword Extractor</div>
+            <div class="task-note">Write a small function that extracts 2-3 search keywords from the startup idea text before calling Trends API</div>
+          </div>
+          <span class="task-wk">W2</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Postman API Testing</div>
+            <div class="task-note">Test all agents via Postman. Document what each endpoint expects and returns. Share with team.</div>
+          </div>
+          <span class="task-wk">W3</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Integration Testing</div>
+            <div class="task-note">Test full pipeline end-to-end with 5 different startup ideas. Report bugs to relevant members.</div>
+          </div>
+          <span class="task-wk">W4</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMBER 4 -->
+    <div class="member-big m4b">
+      <div class="card-top">
+        <div class="card-meta">
+          <span class="card-num">MEMBER 04</span>
+          <span class="card-emoji">🔗</span>
+          <div>
+            <div class="card-title">DB + DevOps + 2 Agents</div>
+            <div class="card-sub">Infrastructure + Agent 3 + 4</div>
+          </div>
+        </div>
+        <div class="agent-highlight">
+          <div class="ah-icon">🔍</div>
+          <div>
+            <div class="ah-label">AGENT 03 — YOUR AGENT</div>
+            <div class="ah-name">Competitor Agent</div>
+            <div class="ah-desc">SerpAPI se real Google search results fetch karo — actual competitor brands, websites. LLM se SWOT analysis aur threat level assess karo.</div>
+            <div class="ah-outputs">
+              <span class="ah-out">competitors</span>
+              <span class="ah-out">SWOT</span>
+              <span class="ah-out">threat_level</span>
+              <span class="ah-out">competitive_gap</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:10px">
+        <div class="agent-highlight" style="opacity:0.75">
+          <div class="ah-icon">💰</div>
+          <div>
+            <div class="ah-label">AGENT 04 — BONUS AGENT</div>
+            <div class="ah-name">Finance Agent</div>
+            <div class="ah-desc">LLM-only agent. Startup cost, revenue model, break-even timeline, profit projection. Agent 3 se context lega.</div>
+            <div class="ah-outputs">
+              <span class="ah-out">startup_cost</span>
+              <span class="ah-out">revenue_model</span>
+              <span class="ah-out">break_even</span>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="card-tasks">
+        <div class="task-label">OTHER RESPONSIBILITIES</div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Neon.tech PostgreSQL Setup</div>
+            <div class="task-note">Create cloud DB, run table migrations, give connection string to Member 2 — Day 1 priority</div>
+          </div>
+          <span class="task-wk">W1</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">GitHub Repo + Branch Rules</div>
+            <div class="task-note">Create org repo, set branch protection, each member gets their own branch (member1, member2 etc)</div>
+          </div>
+          <span class="task-wk">W1</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">SerpAPI Setup + Testing</div>
+            <div class="task-note">Get free SerpAPI key, test competitor search, understand response structure before building Agent 3</div>
+          </div>
+          <span class="task-wk">W1</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Auto-Deploy CI/CD</div>
+            <div class="task-note">Connect GitHub to Railway + Render + Vercel. Push to main = auto deploy. Team doesn't need to manually deploy.</div>
+          </div>
+          <span class="task-wk">W3</span>
+        </div>
+        <div class="task-row">
+          <div class="task-dot"></div>
+          <div>
+            <div class="task-name">Project Documentation</div>
+            <div class="task-note">Architecture diagram, README, API docs, setup guide for major project submission report</div>
+          </div>
+          <span class="task-wk">W4</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- AGENT PIPELINE -->
+  <div class="slabel mb28">AGENT PIPELINE — KON KISKA AGENT HAI</div>
+  <div class="pipeline-section mb40">
+    <div class="pipeline-box">
+      <div class="pipeline-title">6-Agent Sequential Flow — Owner Map</div>
+      <div class="pipeline-sub">Arrows dikhate hain — context kahan se kahan jaata hai</div>
+
+      <div class="pipe-flow">
+
+        <div class="pipe-node pn1">
+          <div class="pn-owner">MEMBER 01</div>
+          <div class="pn-emoji">💡</div>
+          <div class="pn-name">Agent 1</div>
+          <div class="pn-sub">Idea Agent</div>
+        </div>
+
+        <div class="pipe-arrow">
+          <div class="pipe-arrow-sym">→</div>
+          <div class="pipe-arrow-lbl">idea JSON</div>
+        </div>
+
+        <div class="pipe-node pn3">
+          <div class="pn-owner">MEMBER 03</div>
+          <div class="pn-emoji">📊</div>
+          <div class="pn-name">Agent 2</div>
+          <div class="pn-sub">Market Agent</div>
+        </div>
+
+        <div class="pipe-arrow">
+          <div class="pipe-arrow-sym">→</div>
+          <div class="pipe-arrow-lbl">+market JSON</div>
+        </div>
+
+        <div class="pipe-node pn4">
+          <div class="pn-owner">MEMBER 04</div>
+          <div class="pn-emoji">🔍</div>
+          <div class="pn-name">Agent 3</div>
+          <div class="pn-sub">Competitor Agent</div>
+        </div>
+
+        <div class="pipe-arrow">
+          <div class="pipe-arrow-sym">→</div>
+          <div class="pipe-arrow-lbl">+competitor JSON</div>
+        </div>
+
+        <div class="pipe-node pn4">
+          <div class="pn-owner">MEMBER 04</div>
+          <div class="pn-emoji">💰</div>
+          <div class="pn-name">Agent 4</div>
+          <div class="pn-sub">Finance Agent</div>
+        </div>
+
+        <div class="pipe-arrow">
+          <div class="pipe-arrow-sym">→</div>
+          <div class="pipe-arrow-lbl">+finance JSON</div>
+        </div>
+
+        <div class="pipe-node pn1">
+          <div class="pn-owner">MEMBER 01</div>
+          <div class="pn-emoji">⚠️</div>
+          <div class="pn-name">Agent 5</div>
+          <div class="pn-sub">Risk Agent</div>
+        </div>
+
+        <div class="pipe-arrow">
+          <div class="pipe-arrow-sym">→</div>
+          <div class="pipe-arrow-lbl">ALL context</div>
+        </div>
+
+        <div class="pipe-node pn2">
+          <div class="pn-owner">MEMBER 02</div>
+          <div class="pn-emoji">🏆</div>
+          <div class="pn-name">Agent 6</div>
+          <div class="pn-sub">Final Scoring</div>
+        </div>
+
+      </div>
+
+      <div class="context-note">
+        💡 <strong>Context Passing Rule:</strong> Har agent ko pichle saare agents ka output milta hai. Isliye Agent 6 (Member 2 ka) sabse smart hoga — uske paas poori picture hai. Agent 1 sirf raw idea deta hai, Agent 6 ke paas 5 agents ka combined knowledge hai.
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="slabel mb28">4-WEEK PLAN — HAR MEMBER KA WEEKLY TARGET</div>
+  <div class="mb40">
+    <div class="timeline-grid">
+
+      <div class="tl-col w1">
+        <div class="tl-week-badge">WEEK 1</div>
+        <div class="tl-heading">Setup & Foundation</div>
+        <div class="tl-item"><span class="tl-bullet">🔵</span><span><strong>M1:</strong> Agent 1 in Colab + Next.js setup</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟢</span><span><strong>M2:</strong> Express boilerplate + Agent 6 start</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟠</span><span><strong>M3:</strong> pytrends + NewsAPI test + Agent 2 start</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟣</span><span><strong>M4:</strong> Neon DB + GitHub + SerpAPI setup</span></div>
+        <div class="tl-item"><span class="tl-bullet">🤝</span><span><strong>All:</strong> Share JSON structure on Day 3</span></div>
+      </div>
+
+      <div class="tl-col w2">
+        <div class="tl-week-badge">WEEK 2</div>
+        <div class="tl-heading">Agents Complete</div>
+        <div class="tl-item"><span class="tl-bullet">🔵</span><span><strong>M1:</strong> Agent 1 ✓ + Agent 5 + Score UI</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟢</span><span><strong>M2:</strong> Agent 6 ✓ + Orchestrator pipeline</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟠</span><span><strong>M3:</strong> Agent 2 ✓ with real Trends data</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟣</span><span><strong>M4:</strong> Agent 3 ✓ + Agent 4 ✓</span></div>
+        <div class="tl-item"><span class="tl-bullet">🤝</span><span><strong>All:</strong> Each agent tested in Colab</span></div>
+      </div>
+
+      <div class="tl-col w3">
+        <div class="tl-week-badge">WEEK 3</div>
+        <div class="tl-heading">Connect Everything</div>
+        <div class="tl-item"><span class="tl-bullet">🔵</span><span><strong>M1:</strong> Full report UI + responsive</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟢</span><span><strong>M2:</strong> Backend fully integrated + DB saving</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟠</span><span><strong>M3:</strong> Postman testing + bug reports</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟣</span><span><strong>M4:</strong> CI/CD setup + E2E test</span></div>
+        <div class="tl-item"><span class="tl-bullet">🤝</span><span><strong>All:</strong> First internal demo</span></div>
+      </div>
+
+      <div class="tl-col w4">
+        <div class="tl-week-badge">WEEK 4</div>
+        <div class="tl-heading">Deploy & Submit</div>
+        <div class="tl-item"><span class="tl-bullet">🔵</span><span><strong>M1:</strong> Vercel deploy ✓</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟢</span><span><strong>M2:</strong> Railway deploy ✓</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟠</span><span><strong>M3:</strong> Final E2E testing ✓</span></div>
+        <div class="tl-item"><span class="tl-bullet">🟣</span><span><strong>M4:</strong> Render deploy + Docs ✓</span></div>
+        <div class="tl-item"><span class="tl-bullet">🤝</span><span><strong>All:</strong> Demo rehearsal + submission</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SHARED RESPONSIBILITIES -->
+  <div class="slabel mb28">SHARED BY ALL 4 MEMBERS</div>
+  <div class="shared-box">
+    <div style="font-size:13px; color:var(--muted);">Yeh kaam kisi ek ka nahi — sabka hai</div>
+    <div class="shared-grid">
+      <div class="shared-item">
+        <div class="si-icon">📞</div>
+        <div>
+          <div class="si-title">Daily 15-min Standup</div>
+          <div class="si-desc">WhatsApp/Discord pe — kya kiya, kya karenge, kya block kar raha hai</div>
+        </div>
+      </div>
+      <div class="shared-item">
+        <div class="si-icon">🌿</div>
+        <div>
+          <div class="si-title">Git Pull Requests</div>
+          <div class="si-desc">Apni branch pe kaam karo, PR banao, ek aur member review kare toh merge ho</div>
+        </div>
+      </div>
+      <div class="shared-item">
+        <div class="si-icon">🧪</div>
+        <div>
+          <div class="si-title">Colab Testing</div>
+          <div class="si-desc">Apna agent Colab mein 5+ different startup ideas pe test karo before handing off</div>
+        </div>
+      </div>
+      <div class="shared-item">
+        <div class="si-icon">🎤</div>
+        <div>
+          <div class="si-title">Final Demo Presentation</div>
+          <div class="si-desc">Har member apni layer explain karega — AI agent, backend, frontend, DevOps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

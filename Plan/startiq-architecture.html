@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StartIQ – System Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+  :root {
+    --bg: #050810;
+    --surface: #0d1117;
+    --card: #111827;
+    --border: #1e2d40;
+    --accent: #00d4ff;
+    --accent2: #7c3aed;
+    --accent3: #10b981;
+    --accent4: #f59e0b;
+    --accent5: #ef4444;
+    --accent6: #ec4899;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --glow: rgba(0, 212, 255, 0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 800px 600px at 10% 20%, rgba(0,212,255,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 600px 500px at 90% 80%, rgba(124,58,237,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 400px at 50% 50%, rgba(16,185,129,0.02) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    margin-bottom: 60px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 100px;
+    padding: 8px 20px;
+    margin-bottom: 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+
+  .logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; }
+
+  h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, #fff 0%, var(--accent) 50%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  /* SECTION LABELS */
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding-left: 4px;
+  }
+
+  /* LAYERS */
+  .layer {
+    margin-bottom: 16px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .layer:nth-child(1) { animation-delay: 0.1s; }
+  .layer:nth-child(2) { animation-delay: 0.2s; }
+  .layer:nth-child(3) { animation-delay: 0.3s; }
+  .layer:nth-child(4) { animation-delay: 0.4s; }
+  .layer:nth-child(5) { animation-delay: 0.5s; }
+
+  .layer-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .layer-box::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+  }
+
+  .layer-box:hover { border-color: rgba(255,255,255,0.1); }
+
+  .layer-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .layer-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .layer-title { font-size: 16px; font-weight: 700; letter-spacing: -0.5px; }
+  .layer-desc { font-size: 12px; color: var(--muted); font-family: 'Space Mono', monospace; margin-top: 2px; }
+
+  .layer-tag {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid;
+    letter-spacing: 1px;
+  }
+
+  /* TECH PILLS */
+  .tech-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: var(--text);
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+
+  .pill:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.15);
+  }
+
+  /* COLOR THEMES PER LAYER */
+  .frontend .layer-box::before { background: var(--accent); }
+  .frontend .layer-icon { background: rgba(0,212,255,0.1); }
+  .frontend .layer-tag { color: var(--accent); border-color: rgba(0,212,255,0.3); }
+
+  .backend .layer-box::before { background: var(--accent2); }
+  .backend .layer-icon { background: rgba(124,58,237,0.1); }
+  .backend .layer-tag { color: var(--accent2); border-color: rgba(124,58,237,0.3); }
+
+  .ai-layer .layer-box::before { background: var(--accent3); }
+  .ai-layer .layer-icon { background: rgba(16,185,129,0.1); }
+  .ai-layer .layer-tag { color: var(--accent3); border-color: rgba(16,185,129,0.3); }
+
+  .db-layer .layer-box::before { background: var(--accent4); }
+  .db-layer .layer-icon { background: rgba(245,158,11,0.1); }
+  .db-layer .layer-tag { color: var(--accent4); border-color: rgba(245,158,11,0.3); }
+
+  .deploy-layer .layer-box::before { background: var(--accent6); }
+  .deploy-layer .layer-icon { background: rgba(236,72,153,0.1); }
+  .deploy-layer .layer-tag { color: var(--accent6); border-color: rgba(236,72,153,0.3); }
+
+  /* ARROW */
+  .arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    gap: 8px;
+    position: relative;
+  }
+
+  .arrow-line {
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--border), rgba(255,255,255,0.08));
+    position: relative;
+  }
+
+  .arrow-label {
+    position: absolute;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    white-space: nowrap;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .arrow-icon {
+    color: var(--muted);
+    font-size: 14px;
+    animation: bounce 2s infinite;
+  }
+
+  /* AGENT GRID */
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .agents-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .agent-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    transition: all 0.3s;
+    cursor: default;
+  }
+
+  .agent-card:hover {
+    background: rgba(16,185,129,0.05);
+    border-color: rgba(16,185,129,0.3);
+    transform: translateY(-2px);
+  }
+
+  .agent-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent3);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .agent-name {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .agent-outputs {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* DATA FLOW STRIP */
+  .flow-strip {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-top: 16px;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-shrink: 0;
+  }
+
+  .flow-node {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .flow-node.highlight {
+    border-color: rgba(0,212,255,0.4);
+    color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+
+  .flow-arrow {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 0 8px;
+  }
+
+  /* LLM SECTION */
+  .llm-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .llm-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .llm-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .llm-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(16,185,129,0.3);
+  }
+
+  .llm-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .llm-note { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); }
+  .llm-badge {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.3);
+    color: var(--accent3);
+  }
+
+  /* DEPLOY GRID */
+  .deploy-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  @media (max-width: 600px) {
+    .deploy-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .deploy-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .deploy-card:hover { transform: translateY(-2px); border-color: rgba(236,72,153,0.3); }
+
+  .deploy-service { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .deploy-for { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); }
+  .deploy-badge {
+    display: inline-block;
+    margin-top: 6px;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 100px;
+    background: rgba(236,72,153,0.08);
+    border: 1px solid rgba(236,72,153,0.25);
+    color: var(--accent6);
+  }
+
+  /* FINAL SCORE BOX */
+  .score-box {
+    background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(124,58,237,0.05));
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 16px;
+    padding: 24px;
+    margin-top: 40px;
+    animation: fadeUp 0.6s ease 0.7s both;
+  }
+
+  .score-title {
+    font-size: 13px;
+    font-family: 'Space Mono', monospace;
+    color: var(--accent);
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+
+  .json-preview {
+    background: #050810;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    line-height: 1.8;
+    overflow-x: auto;
+  }
+
+  .json-key { color: var(--accent); }
+  .json-str { color: var(--accent3); }
+  .json-num { color: var(--accent4); }
+  .json-bool { color: var(--accent2); }
+  .json-muted { color: var(--muted); }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-badge">
+      <div class="logo-dot"></div>
+      SYSTEM ARCHITECTURE
+    </div>
+    <h1>StartIQ</h1>
+    <p class="subtitle">AI-Powered Multi-Agent Startup Evaluation Platform</p>
+  </div>
+
+  <!-- DATA FLOW -->
+  <div class="section-label">📡 Request Pipeline</div>
+  <div class="flow-strip">
+    <div class="flow-step">
+      <div class="flow-node highlight">User Idea</div>
+      <div class="flow-arrow">→</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-node">Next.js Frontend</div>
+      <div class="flow-arrow">→</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-node">Express Orchestrator</div>
+      <div class="flow-arrow">→</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-node">FastAPI AI Layer</div>
+      <div class="flow-arrow">→</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-node">6 Agents (sequential)</div>
+      <div class="flow-arrow">→</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-node">PostgreSQL (save)</div>
+      <div class="flow-arrow">→</div>
+    </div>
+    <div class="flow-node highlight">JSON Report</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- LAYER 1: FRONTEND -->
+  <div class="layer frontend">
+    <div class="section-label">Layer 1</div>
+    <div class="layer-box">
+      <div class="layer-header">
+        <div class="layer-icon">🌐</div>
+        <div>
+          <div class="layer-title">Frontend Layer</div>
+          <div class="layer-desc">User Interface – Vercel Cloud</div>
+        </div>
+        <div class="layer-tag">NEXT.JS</div>
+      </div>
+      <div class="tech-pills">
+        <div class="pill">Next.js 14 (App Router)</div>
+        <div class="pill">React</div>
+        <div class="pill">Tailwind CSS</div>
+        <div class="pill">Axios (API calls)</div>
+        <div class="pill">JSON Report Renderer</div>
+        <div class="pill">Score Dashboard</div>
+        <div class="pill">Deployed → Vercel.com</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-icon">↓</div>
+    <div class="arrow-label">HTTP POST /evaluate · { idea: "..." }</div>
+  </div>
+
+  <!-- LAYER 2: BACKEND -->
+  <div class="layer backend">
+    <div class="section-label">Layer 2</div>
+    <div class="layer-box">
+      <div class="layer-header">
+        <div class="layer-icon">⚙️</div>
+        <div>
+          <div class="layer-title">Backend Orchestrator</div>
+          <div class="layer-desc">Pipeline Controller – Railway.app Cloud</div>
+        </div>
+        <div class="layer-tag">NODE.JS + EXPRESS</div>
+      </div>
+      <div class="tech-pills">
+        <div class="pill">Express.js REST API</div>
+        <div class="pill">Agent Pipeline Controller</div>
+        <div class="pill">Sequential Agent Caller</div>
+        <div class="pill">Context Aggregator</div>
+        <div class="pill">PostgreSQL Client (pg)</div>
+        <div class="pill">Error Handler + Retry Logic</div>
+        <div class="pill">Deployed → Railway.app</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-icon">↓</div>
+    <div class="arrow-label">Internal API calls to each agent · JSON context passed forward</div>
+  </div>
+
+  <!-- LAYER 3: AI -->
+  <div class="layer ai-layer">
+    <div class="section-label">Layer 3 — Core AI Engine</div>
+    <div class="layer-box">
+      <div class="layer-header">
+        <div class="layer-icon">🤖</div>
+        <div>
+          <div class="layer-title">Multi-Agent AI Layer</div>
+          <div class="layer-desc">6 Specialist Agents – Python · FastAPI · LangChain · Render.com</div>
+        </div>
+        <div class="layer-tag">PYTHON + FASTAPI</div>
+      </div>
+
+      <div class="agents-grid">
+        <div class="agent-card">
+          <div class="agent-num">AGENT 01</div>
+          <div class="agent-name">💡 Idea Agent</div>
+          <div class="agent-outputs">
+            → problem_statement<br>
+            → solution_summary<br>
+            → innovation_level<br>
+            → feasibility_score<br>
+            → clarity_score<br>
+            → overall_idea_score
+          </div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-num">AGENT 02</div>
+          <div class="agent-name">📊 Market Agent</div>
+          <div class="agent-outputs">
+            → TAM / SAM / SOM<br>
+            → target_audience<br>
+            → market_trends<br>
+            → growth_potential<br>
+            → market_score
+          </div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-num">AGENT 03</div>
+          <div class="agent-name">🔍 Competitor Agent</div>
+          <div class="agent-outputs">
+            → direct_competitors<br>
+            → indirect_competitors<br>
+            → SWOT comparison<br>
+            → competitive_gap<br>
+            → threat_level
+          </div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-num">AGENT 04</div>
+          <div class="agent-name">💰 Finance Agent</div>
+          <div class="agent-outputs">
+            → cost_estimation<br>
+            → revenue_model<br>
+            → break_even_analysis<br>
+            → profit_projection<br>
+            → financial_score
+          </div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-num">AGENT 05</div>
+          <div class="agent-name">⚠️ Risk Agent</div>
+          <div class="agent-outputs">
+            → risk_score<br>
+            → execution_challenges<br>
+            → innovation_uniqueness<br>
+            → regulatory_risks<br>
+            → mitigation_tips
+          </div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-num">AGENT 06</div>
+          <div class="agent-name">🏆 Scoring Agent</div>
+          <div class="agent-outputs">
+            → aggregated_scores<br>
+            → final_rating (0–100)<br>
+            → investment_readiness<br>
+            → verdict<br>
+            → structured_JSON
+          </div>
+        </div>
+      </div>
+
+      <!-- LLMs -->
+      <div style="margin-top: 20px;">
+        <div class="section-label" style="margin-bottom: 8px;">🧠 LLM Layer (Free Tier)</div>
+        <div class="llm-grid">
+          <div class="llm-card">
+            <div class="llm-name">Groq</div>
+            <div class="llm-note">Llama 3 / Mixtral</div>
+            <div class="llm-badge">PRIMARY</div>
+          </div>
+          <div class="llm-card">
+            <div class="llm-name">Gemini</div>
+            <div class="llm-note">Google Free Tier</div>
+            <div class="llm-badge">FALLBACK</div>
+          </div>
+          <div class="llm-card">
+            <div class="llm-name">OpenRouter</div>
+            <div class="llm-note">Multi-model router</div>
+            <div class="llm-badge">FALLBACK</div>
+          </div>
+          <div class="llm-card">
+            <div class="llm-name">LangChain</div>
+            <div class="llm-note">Orchestration + JSON parser</div>
+            <div class="llm-badge">FRAMEWORK</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <div class="arrow-icon">↓</div>
+    <div class="arrow-label">Structured JSON saved per agent output</div>
+  </div>
+
+  <!-- LAYER 4: DATABASE -->
+  <div class="layer db-layer">
+    <div class="section-label">Layer 4</div>
+    <div class="layer-box">
+      <div class="layer-header">
+        <div class="layer-icon">🗄️</div>
+        <div>
+          <div class="layer-title">Database Layer</div>
+          <div class="layer-desc">Persistent Storage – Neon.tech (Cloud PostgreSQL)</div>
+        </div>
+        <div class="layer-tag">POSTGRESQL</div>
+      </div>
+      <div class="tech-pills">
+        <div class="pill">evaluations table (run_id, idea, timestamp)</div>
+        <div class="pill">agent_outputs table (agent_name, JSON_result)</div>
+        <div class="pill">final_scores table (overall_score, verdict)</div>
+        <div class="pill">Hosted → Neon.tech (Free)</div>
+        <div class="pill">Connected via pg (Node.js)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- LAYER 5: DEPLOYMENT -->
+  <div class="layer deploy-layer">
+    <div class="section-label">Deployment Map — All Free Cloud Services</div>
+    <div class="layer-box">
+      <div class="layer-header">
+        <div class="layer-icon">🚀</div>
+        <div>
+          <div class="layer-title">Cloud Deployment</div>
+          <div class="layer-desc">Your laptop only runs VS Code · Everything else lives in the cloud</div>
+        </div>
+        <div class="layer-tag">ZERO LOCAL RAM</div>
+      </div>
+      <div class="deploy-grid">
+        <div class="deploy-card">
+          <div class="deploy-service">Vercel</div>
+          <div class="deploy-for">Next.js Frontend</div>
+          <div class="deploy-badge">FREE</div>
+        </div>
+        <div class="deploy-card">
+          <div class="deploy-service">Railway</div>
+          <div class="deploy-for">Node.js Backend</div>
+          <div class="deploy-badge">FREE</div>
+        </div>
+        <div class="deploy-card">
+          <div class="deploy-service">Render</div>
+          <div class="deploy-for">FastAPI AI Layer</div>
+          <div class="deploy-badge">FREE</div>
+        </div>
+        <div class="deploy-card">
+          <div class="deploy-service">Neon.tech</div>
+          <div class="deploy-for">PostgreSQL DB</div>
+          <div class="deploy-badge">FREE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAMPLE OUTPUT -->
+  <div class="score-box">
+    <div class="score-title">// SAMPLE FINAL OUTPUT — Agent 06 JSON Response</div>
+    <div class="json-preview">
+<span class="json-muted">{</span><br>
+&nbsp;&nbsp;<span class="json-key">"run_id"</span>: <span class="json-str">"startiq_a3f9d2"</span>,<br>
+&nbsp;&nbsp;<span class="json-key">"idea_score"</span>: <span class="json-num">82</span>,<br>
+&nbsp;&nbsp;<span class="json-key">"market_score"</span>: <span class="json-num">74</span>,<br>
+&nbsp;&nbsp;<span class="json-key">"competitor_score"</span>: <span class="json-num">68</span>,<br>
+&nbsp;&nbsp;<span class="json-key">"finance_score"</span>: <span class="json-num">71</span>,<br>
+&nbsp;&nbsp;<span class="json-key">"risk_score"</span>: <span class="json-num">65</span>,<br>
+&nbsp;&nbsp;<span class="json-key">"final_rating"</span>: <span class="json-num">76</span>,<br>
+&nbsp;&nbsp;<span class="json-key">"investment_readiness"</span>: <span class="json-str">"PROMISING"</span>,<br>
+&nbsp;&nbsp;<span class="json-key">"verdict"</span>: <span class="json-str">"Strong problem-solution fit. TAM is large. Execution risk is medium. Recommend MVP validation before seed round."</span>,<br>
+&nbsp;&nbsp;<span class="json-key">"recommended_next_steps"</span>: <span class="json-muted">[</span><span class="json-str">"Build MVP"</span>, <span class="json-str">"Validate with 50 users"</span>, <span class="json-str">"Apply to Y Combinator"</span><span class="json-muted">]</span><br>
+<span class="json-muted">}</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
